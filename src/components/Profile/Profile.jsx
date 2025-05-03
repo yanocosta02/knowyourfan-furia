@@ -1,16 +1,18 @@
 // src/components/Profile/Profile.jsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
-import { db } from '../../firebaseConfig'; // Ajuste o caminho
-import './Profile.css'; // Crie para estilos do perfil
+import { db, auth } from '../../firebaseConfig'; // Import auth também
+import { GoogleAuthProvider, TwitterAuthProvider, linkWithPopup, unlink } from "firebase/auth"; // Funções de link/unlink
+import styles from './Profile.module.css'; // CSS Module
+import { FaGoogle, FaTwitter, FaTwitch, FaInstagram, FaUnlink } from 'react-icons/fa'; // Ícones
 
-// --- SIMULAÇÃO DE IA ---
+// --- SIMULAÇÃO DE IA (sem mudanças) ---
 const simulateAIValidation = (dataType, dataValue) => {
   console.log(`[IA SIM] Iniciando validação: ${dataType} (${dataValue ? dataValue.substring(0, 30) + '...' : 'N/A'})`);
   return new Promise(resolve => {
-    const delay = 1200 + Math.random() * 1800; // 1.2s a 3s
+    const delay = 1200 + Math.random() * 1800;
     setTimeout(() => {
-      const success = Math.random() > 0.2; // 80% chance de sucesso
+      const success = Math.random() > 0.2;
       console.log(`[IA SIM] Resultado para ${dataType}: ${success ? 'APROVADO' : 'REPROVADO'}`);
       resolve(success);
     }, delay);
@@ -19,159 +21,179 @@ const simulateAIValidation = (dataType, dataValue) => {
 // --- FIM SIMULAÇÃO ---
 
 const initialProfileData = {
-    name: '',
-    cpf: '',
-    address: '', // Novo campo básico
-    interests: '',
-    activitiesLastYear: '',
-    eventsLastYear: '',
-    purchasesLastYear: '',
+    name: '', cpf: '', address: '', interests: '',
+    activitiesLastYear: '', eventsLastYear: '', purchasesLastYear: '',
     socialLinks: { twitter: '', twitch: '', instagram: '', discord: '' },
-    esportsProfileLink: '',
-    idDocumentInfo: null, // Guarda { name: 'id.pdf', size: 123, type: 'application/pdf' }
-    idValidated: false,
-    esportsProfileValidated: false,
-    lastUpdated: null,
+    esportsProfileLink: '', idDocumentInfo: null,
+    idValidated: false, esportsProfileValidated: false, lastUpdated: null,
 };
 
 function Profile({ userId }) {
   const [profileData, setProfileData] = useState(initialProfileData);
-  const [selectedFile, setSelectedFile] = useState(null); // O objeto File em si (não salvo no BD)
+  const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState({ type: '', text: '' }); // 'success', 'error', 'info'
+  const [linking, setLinking] = useState({ google: false, twitter: false }); // Estado para loading de link/unlink
+  const [message, setMessage] = useState({ type: '', text: '' });
+  const [linkedProviders, setLinkedProviders] = useState([]); // Rastreia provedores vinculados
 
-  // Usar useCallback para memorizar a função que cria a referência ao documento
   const profileDocRef = useCallback(() => doc(db, "userProfiles", userId), [userId]);
 
-  // Carregar dados ao montar
+  // Carregar dados do perfil e provedores vinculados
   useEffect(() => {
-    const fetchProfile = async () => {
-      if (!userId) return; // Garante que userId existe
+    let isMounted = true; // Flag para evitar set state em componente desmontado
+
+    const fetchProfileAndProviders = async () => {
+      if (!userId) return;
       setLoading(true);
       setMessage({ type: '', text: '' });
+
       try {
+        // Buscar Perfil
         const docSnap = await getDoc(profileDocRef());
-        if (docSnap.exists()) {
+        if (isMounted && docSnap.exists()) {
           const data = docSnap.data();
           setProfileData(prev => ({
-              ...initialProfileData, // Garante todos os campos default
-               ...data,
-               // Garante que socialLinks é um objeto
-               socialLinks: data.socialLinks || initialProfileData.socialLinks,
-               // Converte Timestamp do Firebase se existir
-               lastUpdated: data.lastUpdated?.toDate ? data.lastUpdated.toDate() : null
+              ...initialProfileData, ...data,
+              socialLinks: data.socialLinks || initialProfileData.socialLinks,
+              lastUpdated: data.lastUpdated?.toDate ? data.lastUpdated.toDate() : null
             }));
-        } else {
-          console.log("Perfil não encontrado, usuário usará formulário em branco.");
-          setProfileData(initialProfileData); // Reseta para o inicial se não achar
+        } else if (isMounted) {
+          console.log("Perfil não encontrado, usando inicial.");
+          setProfileData(initialProfileData);
         }
+
+        // Buscar Provedores Vinculados
+        const currentUser = auth.currentUser;
+        if (isMounted && currentUser) {
+            const providerIds = currentUser.providerData.map(p => p.providerId);
+            setLinkedProviders(providerIds);
+            console.log("Provedores carregados:", providerIds);
+        }
+
       } catch (error) {
-        console.error("Erro ao buscar perfil:", error);
-        setMessage({ type: 'error', text: "Falha ao carregar o perfil." });
+        console.error("Erro ao buscar perfil/provedores:", error);
+        if (isMounted) setMessage({ type: 'error', text: "Falha ao carregar dados." });
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
-    fetchProfile();
+
+    fetchProfileAndProviders();
+
+    // Cleanup: marca como desmontado
+    return () => { isMounted = false; };
+
   }, [userId, profileDocRef]); // Depende de userId
 
-  // Handlers genéricos e específicos
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setProfileData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSocialLinkChange = (e) => {
-    const { name, value } = e.target; // name será 'twitter', 'twitch', etc.
-    setProfileData(prev => ({
-      ...prev,
-      socialLinks: { ...prev.socialLinks, [name]: value }
-    }));
-  };
-
-  const handleFileChange = (e) => {
+  // Handlers de formulário (sem mudanças)
+  const handleChange = (e) => { /* ... */ setProfileData(prev => ({ ...prev, [e.target.name]: e.target.value })); };
+  const handleSocialLinkChange = (e) => { /* ... */ setProfileData(prev => ({ ...prev, socialLinks: { ...prev.socialLinks, [e.target.name]: e.target.value } })); };
+  const handleFileChange = (e) => { /* ... */
     const file = e.target.files[0];
     if (file) {
-      // Validar tipo/tamanho aqui se desejar
       setSelectedFile(file);
-      setProfileData(prev => ({
-          ...prev,
-          // Atualiza info do doc e reseta validação
-          idDocumentInfo: { name: file.name, size: file.size, type: file.type },
-          idValidated: false
-      }));
+      setProfileData(prev => ({ ...prev, idDocumentInfo: { name: file.name, size: file.size, type: file.type }, idValidated: false }));
       setMessage({ type: 'info', text: `Arquivo "${file.name}" pronto para validação (simulada) ao salvar.` });
     } else {
       setSelectedFile(null);
-      // Opcional: limpar info se cancelar
-      // setProfileData(prev => ({ ...prev, idDocumentInfo: null, idValidated: false }));
     }
-     e.target.value = null; // Permite selecionar o mesmo arquivo novamente
+     e.target.value = null;
+   };
+
+  // Handler para Vincular Conta
+  const handleLinkAccount = async (providerName) => {
+      const currentUser = auth.currentUser;
+      if (!currentUser) return;
+
+      let provider;
+      if (providerName === 'google') provider = new GoogleAuthProvider();
+      else if (providerName === 'twitter') provider = new TwitterAuthProvider();
+      else return;
+
+      setMessage({ type: '', text: '' }); // Limpa msg anterior
+      setLinking(prev => ({ ...prev, [providerName]: true })); // Ativa loading
+
+      try {
+          const result = await linkWithPopup(currentUser, provider);
+          // Atualiza estado local imediatamente
+          const updatedProviders = result.user.providerData.map(p => p.providerId);
+          setLinkedProviders(updatedProviders);
+          setMessage({ type: 'success', text: `Conta ${providerName} vinculada com sucesso!` });
+          console.log("Conta vinculada:", result.user);
+      } catch (error) {
+          console.error(`Erro ao vincular ${providerName}:`, error);
+          if (error.code === 'auth/credential-already-in-use') {
+              setMessage({ type: 'error', text: `Esta conta ${providerName} já está vinculada a outro usuário do nosso site.` });
+          } else if (error.code === 'auth/popup-closed-by-user') {
+               setMessage({ type: 'info', text: `Vinculação com ${providerName} cancelada.` });
+          } else {
+              setMessage({ type: 'error', text: `Falha ao vincular ${providerName}.` });
+          }
+      } finally {
+          setLinking(prev => ({ ...prev, [providerName]: false })); // Desativa loading
+      }
   };
 
-  // Salvar Perfil
+    // Handler para Desvincular Conta
+  const handleUnlinkAccount = async (providerId) => {
+      const currentUser = auth.currentUser;
+      if (!currentUser) return;
+
+      // Lógica de segurança: Não desvincular o último método se não tiver senha, etc.
+       const passwordProvider = currentUser.providerData.find(p => p.providerId === 'password');
+      if (currentUser.providerData.length <= 1 && !passwordProvider) {
+           setMessage({ type: 'error', text: 'Não é possível desvincular o único método de login social.' });
+           return;
+      }
+
+      setMessage({ type: '', text: '' });
+      const providerName = providerId.split('.')[0]; // google ou twitter
+      setLinking(prev => ({ ...prev, [providerName]: true }));
+
+      try {
+          const updatedUser = await unlink(currentUser, providerId);
+           // Atualiza estado local
+          const updatedProviders = updatedUser.providerData.map(p => p.providerId);
+          setLinkedProviders(updatedProviders);
+          setMessage({ type: 'success', text: `Conta ${providerName} desvinculada.` });
+          console.log("Conta desvinculada, usuário atual:", updatedUser);
+      } catch (error) {
+          console.error(`Erro ao desvincular ${providerId}:`, error);
+          setMessage({ type: 'error', text: `Falha ao desvincular ${providerId}.` });
+      } finally {
+          setLinking(prev => ({ ...prev, [providerName]: false }));
+      }
+  };
+
+
+  // Handler Salvar Perfil (sem mudanças na lógica interna de salvar)
   const handleSaveProfile = async (e) => {
     e.preventDefault();
+    // ... (toda a lógica de validação simulada e salvar no Firestore permanece a mesma) ...
     setSaving(true);
     setMessage({ type: '', text: '' });
-
-    let dataToSave = { ...profileData }; // Copia estado atual
-    let needsIdValidation = false;
-    let needsEsportsLinkValidation = false;
-
-    // 1. Verificar se validações simuladas precisam rodar
-    if (selectedFile && !dataToSave.idValidated) { // Novo arquivo E não validado ainda?
-        needsIdValidation = true;
-    }
-    if (dataToSave.esportsProfileLink && !dataToSave.esportsProfileValidated) { // Link existe E não validado?
-        needsEsportsLinkValidation = true;
-    }
+    let dataToSave = { ...profileData };
+    let needsIdValidation = selectedFile && !dataToSave.idValidated;
+    let needsEsportsLinkValidation = dataToSave.esportsProfileLink && !dataToSave.esportsProfileValidated;
 
     try {
-      // 2. Executar validações simuladas (se necessário)
-      const validationPromises = [];
-      if (needsIdValidation) {
-        setMessage({ type: 'info', text: 'Validando documento (simulado)...' });
-        validationPromises.push(
-          simulateAIValidation('ID Document', dataToSave.idDocumentInfo?.name)
-            .then(result => { dataToSave.idValidated = result; })
-        );
-      }
-      if (needsEsportsLinkValidation) {
-         setMessage({ type: 'info', text: 'Validando link de eSports (simulado)...' });
-         validationPromises.push(
-           simulateAIValidation('Esports Link', dataToSave.esportsProfileLink)
-             .then(result => { dataToSave.esportsProfileValidated = result; })
-         );
-      }
+        const validationPromises = [];
+        if (needsIdValidation) validationPromises.push(simulateAIValidation('ID Document', dataToSave.idDocumentInfo?.name).then(r => dataToSave.idValidated = r));
+        if (needsEsportsLinkValidation) validationPromises.push(simulateAIValidation('Esports Link', dataToSave.esportsProfileLink).then(r => dataToSave.esportsProfileValidated = r));
 
-      // Espera as simulações terminarem
-      if (validationPromises.length > 0) {
-          await Promise.all(validationPromises);
-          setMessage({ type: 'info', text: 'Validações (simuladas) concluídas.' });
-      }
+        if (validationPromises.length > 0) {
+            setMessage({ type: 'info', text: 'Processando validações simuladas...' });
+            await Promise.all(validationPromises);
+        }
 
+        delete dataToSave.selectedFile;
+        dataToSave.lastUpdated = serverTimestamp();
+        await setDoc(profileDocRef(), dataToSave, { merge: true });
 
-      // 3. Preparar dados finais e salvar no Firestore
-      // NÃO salvamos o objeto 'selectedFile'
-      delete dataToSave.selectedFile; // Garante que não vá pro BD
-      dataToSave.lastUpdated = serverTimestamp(); // Timestamp do servidor
-
-      await setDoc(profileDocRef(), dataToSave, { merge: true });
-
-      // Atualiza estado local APÓS sucesso no BD
-      setProfileData(prev => ({
-          ...prev,
-          ...dataToSave,
-          // Atualiza a data localmente para feedback imediato
-          // (o valor real do serverTimestamp só virá na próxima leitura)
-          lastUpdated: new Date()
-        }));
-      setSelectedFile(null); // Limpa o file selecionado
-
-      setMessage({ type: 'success', text: 'Perfil salvo com sucesso!' });
-
+        setProfileData(prev => ({ ...prev, ...dataToSave, lastUpdated: new Date() }));
+        setSelectedFile(null);
+        setMessage({ type: 'success', text: 'Perfil salvo com sucesso!' });
     } catch (error) {
       console.error("Erro ao salvar perfil:", error);
       setMessage({ type: 'error', text: 'Erro ao salvar o perfil. Tente novamente.' });
@@ -180,123 +202,143 @@ function Profile({ userId }) {
     }
   };
 
-  // Renderização
   if (loading) {
-    return <div className="profile-loading">Carregando perfil...</div>;
+    return <div className={styles.profileLoading}>Carregando perfil...</div>; // Use profileLoading se definido
   }
 
+  // Função helper
+  const isLinked = (providerId) => linkedProviders.includes(providerId);
+
   return (
-    <div className="profile-container">
-      <h2>Meu Perfil de Fã de Esports</h2>
-      {message.text && (
-        <p className={`message ${message.type}`}>
-          {message.text}
-        </p>
-      )}
-      <form onSubmit={handleSaveProfile} className="profile-form">
+    <div className={styles.profileContainer}>
+      {/* Mensagem Global */}
+      {message.text && ( <p className={`${styles.message} ${styles[message.type]}`}>{message.text}</p> )}
 
-        <fieldset>
+      <h2>Meu Perfil de Fã FURIA</h2>
+
+      {/* Formulário Principal */}
+      <form onSubmit={handleSaveProfile} id="profileFormId" className={styles.profileForm}>
+        {/* Fieldset: Informações Pessoais */}
+        <fieldset className={styles.fieldset}>
           <legend>Informações Pessoais</legend>
-          <div className="form-group">
-            <label htmlFor="name">Nome Completo:</label>
-            <input type="text" id="name" name="name" value={profileData.name} onChange={handleChange} required />
-          </div>
-           <div className="form-group">
-             <label htmlFor="cpf">CPF:</label>
-             <input type="text" id="cpf" name="cpf" value={profileData.cpf} onChange={handleChange} placeholder="000.000.000-00" />
+           <div className={styles.formGroup}>
+             <label htmlFor="name">Nome Completo:</label>
+             <input type="text" id="name" name="name" value={profileData.name} onChange={handleChange} required />
            </div>
-          <div className="form-group">
-            <label htmlFor="address">Endereço:</label>
-            <input type="text" id="address" name="address" value={profileData.address} onChange={handleChange} />
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend>Interesses e Atividades (Último Ano)</legend>
-          <div className="form-group">
-            <label htmlFor="interests">Interesses (Jogos, Times, etc.):</label>
-            <textarea id="interests" name="interests" value={profileData.interests} onChange={handleChange} rows="3" />
-          </div>
-          {/* Outros textareas: activitiesLastYear, eventsLastYear, purchasesLastYear */}
-          <div className="form-group">
-            <label htmlFor="activitiesLastYear">Atividades:</label>
-            <textarea id="activitiesLastYear" name="activitiesLastYear" value={profileData.activitiesLastYear} onChange={handleChange} rows="3" />
-          </div>
-           <div className="form-group">
-             <label htmlFor="eventsLastYear">Eventos:</label>
-             <textarea id="eventsLastYear" name="eventsLastYear" value={profileData.eventsLastYear} onChange={handleChange} rows="3" />
-           </div>
-            <div className="form-group">
-              <label htmlFor="purchasesLastYear">Compras:</label>
-              <textarea id="purchasesLastYear" name="purchasesLastYear" value={profileData.purchasesLastYear} onChange={handleChange} rows="3" />
+            <div className={styles.formGroup}>
+              <label htmlFor="cpf">CPF:</label>
+              <input type="text" id="cpf" name="cpf" value={profileData.cpf} onChange={handleChange} placeholder="000.000.000-00" />
             </div>
+           <div className={styles.formGroup}>
+             <label htmlFor="address">Endereço:</label>
+             <input type="text" id="address" name="address" value={profileData.address} onChange={handleChange} />
+           </div>
         </fieldset>
 
-        <fieldset>
-            <legend>Validação de Identidade (Simulada)</legend>
-            <div className="form-group">
+        {/* Fieldset: Interesses e Atividades */}
+        <fieldset className={styles.fieldset}>
+            <legend>Interesses e Atividades (Último Ano)</legend>
+            {/* ... Seus textareas para interests, activities, events, purchases ... */}
+            <div className={styles.formGroup}><label htmlFor="interests">Interesses:</label><textarea id="interests" name="interests" value={profileData.interests} onChange={handleChange} rows="3" className={styles.textareaField}/></div>
+            <div className={styles.formGroup}><label htmlFor="activitiesLastYear">Atividades:</label><textarea id="activitiesLastYear" name="activitiesLastYear" value={profileData.activitiesLastYear} onChange={handleChange} rows="3" className={styles.textareaField}/></div>
+            <div className={styles.formGroup}><label htmlFor="eventsLastYear">Eventos:</label><textarea id="eventsLastYear" name="eventsLastYear" value={profileData.eventsLastYear} onChange={handleChange} rows="3" className={styles.textareaField}/></div>
+            <div className={styles.formGroup}><label htmlFor="purchasesLastYear">Compras:</label><textarea id="purchasesLastYear" name="purchasesLastYear" value={profileData.purchasesLastYear} onChange={handleChange} rows="3" className={styles.textareaField}/></div>
+        </fieldset>
+
+        {/* Fieldset: Validação de Identidade */}
+        <fieldset className={styles.fieldset}>
+             <legend>Validação de Identidade (Simulada)</legend>
+             {/* ... Seu input file e status ... */}
+             <div className={styles.formGroup}>
                 <label htmlFor="idDocument">Anexar Documento (ID, CNH):</label>
                 <input type="file" id="idDocument" name="idDocument" onChange={handleFileChange} accept=".pdf,.jpg,.jpeg,.png"/>
-                {profileData.idDocumentInfo && (
-                    <span className="file-info">Selecionado: {profileData.idDocumentInfo.name}</span>
-                )}
-            </div>
-            <div className="validation-status">
-                Status:
-                {!profileData.idDocumentInfo ? (
-                     <em> Nenhum documento selecionado</em>
-                ) : profileData.idValidated ? (
-                    <strong className="status-validated"> Validado (Simulado)</strong>
-                ) : (
-                    <strong className="status-pending"> Pendente / Reprovado (Simulado)</strong>
-                )}
-            </div>
-             <small>O arquivo não é enviado (Plano Spark). A validação é simulada.</small>
-        </fieldset>
-
-         <fieldset>
-           <legend>Links Sociais e de Jogos</legend>
-           {Object.keys(profileData.socialLinks).map((platform) => (
-             <div className="form-group" key={platform}>
-               <label htmlFor={platform}>{platform.charAt(0).toUpperCase() + platform.slice(1)}:</label>
-               <input
-                 type="url"
-                 id={platform}
-                 name={platform}
-                 value={profileData.socialLinks[platform]}
-                 onChange={handleSocialLinkChange}
-                 placeholder={`https://.../${platform}.com/`}
-                />
+                {profileData.idDocumentInfo && (<span className={styles.fileInfo}>Selecionado: {profileData.idDocumentInfo.name}</span>)}
              </div>
-           ))}
-           <hr />
-           <div className="form-group">
-             <label htmlFor="esportsProfileLink">Link Perfil Esports (OP.GG, etc.):</label>
-             <input type="url" id="esportsProfileLink" name="esportsProfileLink" value={profileData.esportsProfileLink} onChange={handleChange} />
-           </div>
-            <div className="validation-status">
-                Status Link:
-                {!profileData.esportsProfileLink ? (
-                     <em> Nenhum link fornecido</em>
-                 ) : profileData.esportsProfileValidated ? (
-                     <strong className="status-validated"> Validado (Simulado)</strong>
-                 ) : (
-                     <strong className="status-pending"> Pendente / Reprovado (Simulado)</strong>
-                 )}
-            </div>
+             <div className={styles.validationStatus}> Status:
+                 {!profileData.idDocumentInfo ? (<em> Nenhum doc</em>) : profileData.idValidated ? (<strong className={styles.statusValidated}> Validado</strong>) : (<strong className={styles.statusPending}> Pendente</strong>)}
+             </div>
+              <small>O arquivo não é enviado (Plano Spark). Validação simulada.</small>
          </fieldset>
 
-        <button type="submit" disabled={saving || loading} className="save-button">
-          {saving ? 'Salvando...' : 'Salvar Alterações'}
-        </button>
+        {/* Fieldset: Links Sociais e de Jogos */}
+        <fieldset className={styles.fieldset}>
+            <legend>Links Sociais e de Jogos</legend>
+             {/* ... Seus inputs para links (twitter, twitch, etc.) ... */}
+             {Object.keys(profileData.socialLinks).map((platform) => (
+               <div className={styles.formGroup} key={platform}>
+                 <label htmlFor={platform}>{platform.charAt(0).toUpperCase() + platform.slice(1)}:</label>
+                 <input type="url" id={platform} name={platform} value={profileData.socialLinks[platform]} onChange={handleSocialLinkChange} placeholder={`https://.../${platform}.com/`} />
+               </div>
+             ))}
+            <hr/>
+            {/* ... Seu input para esportsProfileLink e status ... */}
+            <div className={styles.formGroup}>
+                <label htmlFor="esportsProfileLink">Link Perfil Esports (OP.GG, etc.):</label>
+                <input type="url" id="esportsProfileLink" name="esportsProfileLink" value={profileData.esportsProfileLink} onChange={handleChange} />
+            </div>
+            <div className={styles.validationStatus}> Status Link:
+                {!profileData.esportsProfileLink ? (<em> Nenhum link</em>) : profileData.esportsProfileValidated ? (<strong className={styles.statusValidated}> Validado</strong>) : (<strong className={styles.statusPending}> Pendente</strong>)}
+             </div>
+        </fieldset>
+      </form> {/* Fim do formulário principal */}
 
-         {profileData.lastUpdated && (
-            <p className="last-updated">
-                Última atualização: {profileData.lastUpdated.toLocaleString()}
-            </p>
-         )}
-      </form>
-    </div>
+
+        {/* Fieldset: Contas Vinculadas (FORA do form principal) */}
+        <fieldset className={styles.fieldset}>
+            <legend>Contas Vinculadas</legend>
+            <div className={styles.linkedAccountsContainer}>
+                {/* Google */}
+                <div className={styles.linkedAccountItem}>
+                    <FaGoogle className={styles.providerIcon} color="google.com"/>
+                    <span>Google</span>
+                    {isLinked('google.com') ? (
+                        <button onClick={() => handleUnlinkAccount('google.com')} className={styles.unlinkButton} disabled={linking.google || linking.twitter}>
+                            {linking.google ? 'Aguarde...' : <><FaUnlink /> Desvincular</>}
+                        </button>
+                    ) : (
+                        <button onClick={() => handleLinkAccount('google')} className={styles.linkButton} disabled={linking.google || linking.twitter}>
+                            {linking.google ? 'Aguarde...' : 'Vincular'}
+                        </button>
+                    )}
+                </div>
+                {/* Twitter */}
+                 <div className={styles.linkedAccountItem}>
+                     <FaTwitter className={styles.providerIcon} color="twitter.com"/>
+                    <span>Twitter</span>
+                    {isLinked('twitter.com') ? (
+                        <button onClick={() => handleUnlinkAccount('twitter.com')} className={styles.unlinkButton} disabled={linking.google || linking.twitter}>
+                           {linking.twitter ? 'Aguarde...' : <><FaUnlink /> Desvincular</>}
+                        </button>
+                    ) : (
+                        <button onClick={() => handleLinkAccount('twitter')} className={styles.linkButton} disabled={linking.google || linking.twitter}>
+                           {linking.twitter ? 'Aguarde...' : 'Vincular'}
+                        </button>
+                    )}
+                </div>
+                 {/* Placeholders */}
+                 <div className={`${styles.linkedAccountItem} ${styles.disabled}`}>
+                    <FaTwitch className={styles.providerIcon} />
+                    <span>Twitch</span>
+                    <button disabled className={styles.linkButton}>Vincular (Em breve)</button>
+                 </div>
+                 <div className={`${styles.linkedAccountItem} ${styles.disabled}`}>
+                     <FaInstagram className={styles.providerIcon} />
+                    <span>Instagram</span>
+                    <button disabled className={styles.linkButton}>Vincular (Em breve)</button>
+                 </div>
+            </div>
+        </fieldset>
+
+
+        {/* Botão Salvar (pode ficar fora se o form tiver ID) e Last Updated */}
+         <div className={styles.saveButtonContainer}> {/* Container opcional para centralizar */}
+            <button type="submit" form="profileFormId" disabled={saving || loading || linking.google || linking.twitter} className={styles.saveButton}>
+                {saving ? 'Salvando...' : 'Salvar Alterações do Perfil'}
+            </button>
+         </div>
+          {profileData.lastUpdated && ( <p className={styles.lastUpdated}>Última atualização: {profileData.lastUpdated.toLocaleString()}</p> )}
+
+    </div> // Fim profileContainer
   );
 }
 

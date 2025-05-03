@@ -1,0 +1,213 @@
+/* src/components/Profile/Profile.module.css */
+.profileContainer {
+    padding: 20px;
+    background-color: var(--furia-dark-gray); /* Fundo sutilmente diferente */
+    border-radius: var(--border-radius-medium);
+    border: 1px solid var(--furia-medium-gray);
+    margin-top: 20px;
+  }
+  
+  .profileContainer h2 {
+      text-align: center;
+      margin-top: 0;
+      margin-bottom: 30px;
+  }
+  
+  .profileForm {
+    display: flex;
+    flex-direction: column;
+    gap: 30px; /* Espaço entre fieldsets */
+  }
+  
+  .fieldset {
+    border: 1px solid var(--furia-medium-gray);
+    border-radius: var(--border-radius-small);
+    padding: 20px 25px;
+    margin: 0; /* Reset default margin */
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Espaço entre form groups dentro do fieldset */
+  }
+  
+  .fieldset legend {
+      font-size: 1.1em;
+      font-weight: 600;
+      color: var(--furia-white);
+      padding: 0 10px; /* Espaçamento interno da legenda */
+      margin-left: 5px; /* Alinha com o conteúdo */
+  }
+  
+  .formGroup {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+  }
+  
+  .formGroup label {
+      font-weight: 500;
+      color: var(--furia-light-gray);
+  }
+  
+  /* Inputs e Textareas herdam de index.css */
+  /* Classe específica se necessário */
+  .inputField { }
+  .textareaField {
+      min-height: 80px; /* Altura mínima para textareas */
+      resize: vertical; /* Permite redimensionar só verticalmente */
+  }
+  
+  .fileInfo {
+      font-size: 0.9em;
+      color: var(--furia-medium-gray);
+      margin-left: 10px; /* Espaço após o input file */
+      font-style: italic;
+  }
+  
+  .validationStatus {
+      margin-top: -10px; /* Aproxima o status do input acima */
+      margin-bottom: 5px;
+      font-size: 0.9em;
+  }
+  
+  .statusValidated {
+      color: var(--furia-success-green);
+      font-weight: bold;
+  }
+  
+  .statusPending {
+      color: var(--furia-pending-orange);
+      font-weight: bold;
+  }
+  
+  .fieldset small {
+      font-size: 0.85em;
+      color: var(--furia-medium-gray);
+      text-align: center;
+      margin-top: 5px;
+  }
+  
+  .saveButton {
+      align-self: center; /* Centraliza o botão */
+      padding: 0.9em 2em;
+      background-color: var(--furia-black); /* Mesmo estilo do botão de auth */
+      color: var(--furia-white);
+      border: 1px solid var(--furia-medium-gray);
+      font-weight: 600;
+      min-width: 180px; /* Largura mínima */
+  }
+  
+   .saveButton:hover:not(:disabled) {
+     background-color: #1a1a1a;
+     border-color: var(--furia-white);
+  }
+  
+  .lastUpdated {
+      font-size: 0.8em;
+      color: var(--furia-medium-gray);
+      text-align: center;
+      margin-top: 25px;
+  }
+  
+  /* Estilos para mensagens de feedback */
+  .message {
+    padding: 12px 20px;
+    border-radius: var(--border-radius-small);
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 500;
+  }
+  
+  .message.success {
+    background-color: rgba(76, 175, 80, 0.15);
+    border: 1px solid var(--furia-success-green);
+    color: var(--furia-success-green);
+  }
+  
+  .message.error {
+    background-color: rgba(244, 67, 54, 0.15);
+    border: 1px solid var(--furia-error-red);
+    color: var(--furia-error-red);
+  }
+  
+  .message.info {
+      background-color: rgba(33, 150, 243, 0.15);
+      border: 1px solid var(--furia-info-blue);
+      color: var(--furia-info-blue);
+  }
+  /* Estilos para a seção de Contas Vinculadas */
+.linkedAccountsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Espaço entre cada item de conta */
+  }
+  
+  .linkedAccountItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Alinha itens nas extremidades */
+    padding: 10px 15px;
+    background-color: var(--furia-black); /* Fundo um pouco diferente */
+    border: 1px solid var(--furia-medium-gray);
+    border-radius: var(--border-radius-small);
+    gap: 15px;
+  }
+  
+  .linkedAccountItem span { /* Nome do provedor */
+    flex-grow: 1; /* Ocupa espaço */
+    font-weight: 500;
+    color: var(--furia-light-gray);
+  }
+  
+  .providerIcon {
+    font-size: 1.5em; /* Tamanho do ícone */
+    color: var(--furia-light-gray); /* Cor padrão */
+  }
+  /* Cores específicas de ícone (opcional) */
+  .linkedAccountItem svg:first-of-type[color="google.com"] { color: #DB4437; }
+  .linkedAccountItem svg:first-of-type[color="twitter.com"] { color: #1DA1F2; }
+  
+  
+  .linkButton,
+  .unlinkButton {
+    padding: 0.5em 1em;
+    font-size: 0.9em;
+    min-width: 110px; /* Garante largura mínima */
+    text-align: center;
+  }
+  
+  .linkButton {
+    background-color: var(--furia-info-blue);
+    color: white;
+    border-color: transparent;
+  }
+  .linkButton:hover:not(:disabled) {
+    background-color: #1a7bcd;
+  }
+  
+  .unlinkButton {
+    background-color: #4e0000; /* Vermelho escuro */
+    color: white;
+    border-color: transparent;
+    display: flex; /* Para alinhar ícone e texto */
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+  .unlinkButton:hover:not(:disabled) {
+     background-color: var(--furia-error-red);
+  }
+  
+  /* Estilo para itens desabilitados (Twitch/Insta) */
+  .linkedAccountItem.disabled {
+    opacity: 0.6;
+  }
+  .linkedAccountItem.disabled .linkButton {
+     cursor: not-allowed;
+     background-color: var(--furia-medium-gray);
+  }
+  
+  /* Ajuste no botão salvar se ele ficou fora do form */
+  .saveButtonContainer { /* Crie um container se precisar colocar fora */
+      text-align: center;
+      margin-top: 20px;
+  }

@@ -78,3 +78,86 @@
    .authSwitch a:hover {
        text-decoration: underline;
    }
+
+   .socialLoginDivider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 25px 0;
+    color: var(--furia-medium-gray);
+    font-size: 0.9em;
+    font-weight: 500;
+  }
+  
+  .socialLoginDivider::before,
+  .socialLoginDivider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--furia-medium-gray);
+  }
+  
+  .socialLoginDivider:not(:empty)::before {
+    margin-right: .5em;
+  }
+  
+  .socialLoginDivider:not(:empty)::after {
+    margin-left: .5em;
+  }
+  
+  .socialLoginButtons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Espaço entre botões sociais */
+  }
+  
+  .socialButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Espaço entre ícone e texto */
+    padding: 0.8em 1.4em;
+    border: 1px solid var(--furia-medium-gray);
+    background-color: var(--furia-dark-gray);
+    color: var(--furia-light-gray);
+    font-weight: 500;
+    font-size: 0.95em;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+  
+  .socialButton svg { /* Estilo para os ícones */
+    font-size: 1.2em;
+  }
+  
+  .socialButton:hover:not(:disabled) {
+    border-color: var(--furia-white);
+    background-color: #303030; /* Um pouco mais claro */
+  }
+  
+  /* Cores específicas */
+  .googleButton {
+    /* background-color: #4285F4; */ /* Pode usar a cor da marca ou manter o tema */
+    /* color: white; */
+  }
+  .googleButton:hover:not(:disabled) {
+     /* background-color: #357ae8; */
+  }
+  
+  .twitterButton {
+   /* background-color: #1DA1F2; */
+   /* color: white; */
+  }
+  .twitterButton:hover:not(:disabled) {
+   /* background-color: #1a91da; */
+  }
+  
+  .disabledButton {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: var(--furia-medium-gray);
+    border-color: transparent;
+  }
+  
+  .disabledButton:hover {
+     background-color: var(--furia-medium-gray); /* Sem mudança no hover */
+     border-color: transparent;
+  }
