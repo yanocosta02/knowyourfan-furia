@@ -2,356 +2,658 @@
 
 /* Estilos Gerais do Container */
 .profileContainer {
-    padding: 30px;
-    background-color: var(--furia-dark-gray);
-    border-radius: var(--border-radius-medium);
-    border: 1px solid var(--furia-medium-gray);
-    margin-top: 20px;
-    width: 100%;
-    max-width: 800px; /* Ajuste a largura máxima se necessário */
-    margin: 20px auto; /* Centraliza */
-  }
-  
-  .profileContainer h2 {
-      text-align: center;
-      margin-top: 0;
-      margin-bottom: 30px;
-  }
-  
-  .profileLoading {
-      text-align: center;
-      padding: 50px;
-      color: var(--furia-medium-gray);
-      font-size: 1.2em;
-  }
-  
-  /* Estilos do Wizard (Indicador de Etapas) */
-  .stepIndicator {
-    display: flex;
-    flex-wrap: wrap; /* Permite quebrar linha em telas menores */
-    justify-content: center;
-    gap: 10px; /* Espaço entre botões de etapa */
-    margin-bottom: 30px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--furia-dark-gray);
-  }
-  
-  .step { /* Estilo base para botão/link da etapa */
-    color: var(--furia-medium-gray);
-    font-weight: 500;
-    padding: 5px 10px;
-    border-bottom: 2px solid transparent;
-    transition: color 0.3s ease, border-color 0.3s ease;
-    cursor: default; /* Padrão não clicável (será sobrescrito) */
-  }
-  
-  .stepClickable { /* Classe para tornar clicável */
-      cursor: pointer;
-      background: none;
-      border: none;
-      /* padding: 5px 10px; -> Herda do .step */
-      margin: 0;
-      font-family: inherit;
-      font-size: inherit;
-      text-align: inherit;
-      border-bottom: 2px solid transparent; /* Mantém para estado ativo */
-      color: var(--furia-medium-gray);
-  }
-  .stepClickable:hover:not(:disabled) {
-      color: var(--furia-light-gray);
-  }
-  .stepClickable:disabled {
-      cursor: not-allowed;
-      opacity: 0.6;
-  }
-  
-  .stepActive { /* Estilo quando a etapa está ativa */
-    color: var(--furia-white);
-    border-bottom-color: var(--furia-info-blue);
-    font-weight: 600;
-    cursor: default; /* Já está ativo, não precisa de cursor pointer */
-  }
-  
-  /* Conteúdo da Etapa Atual */
-  .stepContent {
-    margin-bottom: 30px;
-    min-height: 200px; /* Evita que a página pule muito ao trocar etapas */
-  }
-  
-  /* Estilos de Fieldset dentro das etapas (para remover bordas se não quiser) */
-  .stepFieldset {
-      border: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 25px; /* Espaço entre grupos de formulário dentro da etapa */
-  }
-  .stepFieldset legend {
-      font-size: 1.1em;
-      font-weight: 600;
-      color: var(--furia-white);
-      margin-bottom: 15px;
-      display: block; /* Garante que o espaçamento funcione */
-      /* display: none; -> Descomente se quiser esconder legendas */
-  }
-  
-  
-  /* Grupo de Formulário Padrão */
-  .formGroup {
-      position: relative; /* Para posicionamento absoluto de sugestões */
-      display: flex;
-      flex-direction: column;
-      gap: 8px; /* Espaço entre label e input/container */
-  }
-  
-  .formGroup label {
-      font-weight: 500;
-      color: var(--furia-light-gray);
-  }
-  
-  /* Inputs e Textareas (estilos básicos herdados de index.css) */
-  .inputField { }
-  .textareaField {
-      min-height: 80px;
-      resize: vertical;
-  }
-  
-  /* Estilos para o Componente TagInput */
-  .tagInputContainer {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 10px;
-    border: 1px solid var(--furia-medium-gray);
-    border-radius: var(--border-radius-small);
-    background-color: var(--furia-dark-gray);
-    cursor: text;
-    min-height: 40px;
-  }
-  .tagInputContainer:focus-within {
-     border-color: var(--furia-white);
-  }
-  
-  .tagItem {
-    display: inline-flex;
-    align-items: center;
-    background-color: var(--furia-medium-gray);
-    color: var(--furia-white);
-    padding: 4px 8px;
-    border-radius: var(--border-radius-small);
-    font-size: 0.9em;
-    white-space: nowrap;
-  }
-  
-  .tagRemoveButton {
-    margin-left: 6px;
-    background: none;
-    border: none;
-    color: var(--furia-light-gray);
-    cursor: pointer;
-    padding: 0;
-    font-size: 1.1em;
-    line-height: 1;
-    transition: color 0.2s ease;
-  }
-  .tagRemoveButton:hover {
-    color: var(--furia-error-red);
-  }
-  
-  .tagInputField {
-    flex-grow: 1;
-    border: none;
-    background: none;
-    color: inherit;
-    padding: 4px 0;
-    margin: 0;
-    outline: none;
-    min-width: 150px;
-    font-size: 1em;
-  }
-  
-  /* Estilos para Sugestões (Autocomplete) */
-  .suggestionsContainer {
-    position: relative; /* Necessário para posicionar a lista abaixo */
-  }
-  
-  .suggestionsList {
-    position: absolute;
-    top: 100%; /* Logo abaixo do container pai */
-    left: 0;
-    right: 0; /* Ocupa toda a largura */
-    background-color: var(--furia-dark-gray);
-    border: 1px solid var(--furia-medium-gray);
-    border-radius: var(--border-radius-small);
-    list-style: none;
-    margin: 2px 0 0 0; /* Espaço superior */
-    padding: 0;
-    max-height: 150px;
-    overflow-y: auto;
-    z-index: 10;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  .suggestionItem {
-    padding: 8px 12px;
-    cursor: pointer;
-    color: var(--furia-light-gray);
-    transition: background-color 0.2s ease;
-  }
-  .suggestionItem:hover {
-    background-color: var(--furia-medium-gray);
-    color: var(--furia-white);
-  }
-  .suggestionItem:not(:last-child) {
-      border-bottom: 1px solid #333;
-  }
-  
-  /* Info de Arquivo Selecionado */
-  .fileInfo {
-      font-size: 0.9em;
-      color: var(--furia-medium-gray);
-      margin-left: 0; /* Ajustado */
-      font-style: italic;
-  }
-  
-  /* Status de Validação */
-  .validationStatus {
-      margin-top: 5px; /* Ajustado */
-      margin-bottom: 5px;
-      font-size: 0.9em;
-  }
-  .statusValidated {
-      color: var(--furia-success-green);
-      font-weight: bold;
-  }
-  .statusPending {
-      color: var(--furia-pending-orange);
-      font-weight: bold;
-  }
-  
-  /* Notas pequenas (small) */
-  .stepFieldset small {
-      font-size: 0.85em;
-      color: var(--furia-medium-gray);
-      margin-top: -5px; /* Aproxima do campo acima */
-      display: block;
-  }
-  
-  
-  /* Estilos para Contas Vinculadas (na Etapa Social) */
-  .linkedAccountsContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-  .linkedAccountItem {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 15px;
-    background-color: var(--furia-black);
-    border: 1px solid var(--furia-medium-gray);
-    border-radius: var(--border-radius-small);
-    gap: 15px;
-  }
-  .linkedAccountItem span { flex-grow: 1; font-weight: 500; color: var(--furia-light-gray); }
-  .providerIcon { font-size: 1.5em; color: var(--furia-light-gray); }
-  /* Ícones coloridos (opcional) */
-  /* .linkedAccountItem svg[data-icon="google"] { color: #DB4437; } */
-  /* .linkedAccountItem svg[data-icon="twitter"] { color: #1DA1F2; } */
-  
-  .linkButton, .unlinkButton { padding: 0.5em 1em; font-size: 0.9em; min-width: 110px; text-align: center; }
-  .linkButton { background-color: var(--furia-info-blue); color: white; border-color: transparent; }
-  .linkButton:hover:not(:disabled) { background-color: #1a7bcd; }
-  .unlinkButton { background-color: #4e0000; color: white; border-color: transparent; display: flex; align-items: center; justify-content: center; gap: 5px; }
-  .unlinkButton:hover:not(:disabled) { background-color: var(--furia-error-red); }
-  .linkedAccountItem.disabled { opacity: 0.6; }
-  .linkedAccountItem.disabled .linkButton { cursor: not-allowed; background-color: var(--furia-medium-gray); }
-  
-  
-  /* Botões de Navegação do Wizard */
-  .navigationButtons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid var(--furia-dark-gray);
-  }
-  
-  .navButton {
-    padding: 0.8em 1.8em;
-    min-width: 120px;
-    text-align: center;
-  }
-  
-  .prevButton { background-color: var(--furia-medium-gray); }
-  .prevButton:hover:not(:disabled) { background-color: #666666; }
-  
-  .nextButton { background-color: var(--furia-info-blue); color: white; }
-  .nextButton:hover:not(:disabled) { background-color: #1a7bcd; }
-  
-  .finalSaveButton { background-color: var(--furia-success-green); color: white; border-color: transparent; }
-  .finalSaveButton:hover:not(:disabled) { background-color: #3e8e41; }
-  
-  /* Mensagem de Feedback */
-  .message {
-    padding: 12px 20px;
-    border-radius: var(--border-radius-small);
-    margin-bottom: 20px;
-    text-align: center;
-    font-weight: 500;
-  }
-  .message.success { background-color: rgba(76, 175, 80, 0.15); border: 1px solid var(--furia-success-green); color: var(--furia-success-green); }
-  .message.error { background-color: rgba(244, 67, 54, 0.15); border: 1px solid var(--furia-error-red); color: var(--furia-error-red); }
-  .message.info { background-color: rgba(33, 150, 243, 0.15); border: 1px solid var(--furia-info-blue); color: var(--furia-info-blue); }
-  
-  /* Última Atualização */
-  .lastUpdated {
-      font-size: 0.8em;
-      color: var(--furia-medium-gray);
-      text-align: center;
-      margin-top: 25px;
-  }
-  /* Estilos para Checkboxes de Atividades */
-.checkboxGroupContainer {
-    display: grid; /* Ou flex com flex-wrap */
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Layout em colunas responsivo */
-    gap: 15px; /* Espaço entre itens */
-    margin-top: 10px;
-  }
-  
-  .checkboxItem {
-    display: flex;
-    align-items: center;
-    gap: 10px; /* Espaço entre checkbox e label */
-    background-color: var(--furia-dark-gray); /* Fundo sutil */
-    padding: 10px 15px;
-    border-radius: var(--border-radius-small);
-    border: 1px solid var(--furia-medium-gray);
-    cursor: pointer; /* Faz o item todo parecer clicável */
-    transition: background-color 0.2s ease, border-color 0.2s ease;
-  }
-  .checkboxItem:hover {
-      background-color: #333;
-      border-color: var(--furia-light-gray);
-  }
-  
-  
-  .checkboxItem input[type="checkbox"] {
-    width: auto; /* Reseta largura do input */
-    cursor: pointer;
-    accent-color: var(--furia-info-blue); /* Cor do check (navegadores modernos) */
-    transform: scale(1.2); /* Aumenta um pouco o tamanho */
-    margin: 0;
-  }
-  
-  .checkboxItem label {
-    color: var(--furia-light-gray);
-    font-weight: normal; /* Reset do formGroup label */
-    cursor: pointer;
-    flex-grow: 1; /* Ocupa espaço */
-    /* Remove margin-bottom se herdada do formGroup */
-    margin-bottom: 0;
-  }
+  /* <<< LARGURA FIXA E CENTRALIZAÇÃO >>> */
+  width: 850px; /* Define a largura fixa (ajuste se preferir) */
+  max-width: 100%; /* Garante que não exceda a viewport em telas MUITO pequenas */
+  margin-left: auto; /* Centraliza horizontalmente */
+  margin-right: auto; /* Centraliza horizontalmente */
+  margin-top: 20px;
+  margin-bottom: 40px;
+  /* <<< FIM AJUSTES >>> */
+
+  padding: 30px;
+  background-color: var(--furia-dark-gray);
+  border-radius: var(--border-radius-medium);
+  border: 1px solid var(--furia-medium-gray);
+  box-sizing: border-box;
+}
+
+.profileContainer h2 {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 30px;
+}
+
+.profileLoading {
+  text-align: center;
+  padding: 50px;
+  color: var(--furia-medium-gray);
+  font-size: 1.2em;
+}
+
+/* Indicador de Etapas */
+.stepIndicator {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 30px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--furia-dark-gray);
+}
+
+.step {
+  color: var(--furia-medium-gray);
+  font-weight: 500;
+  padding: 5px 10px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.3s ease, border-color 0.3s ease;
+  cursor: default;
+}
+
+.stepClickable {
+  cursor: pointer;
+  background: none;
+  border: none;
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  text-align: inherit;
+  color: var(--furia-medium-gray);
+}
+
+.stepClickable:hover:not(:disabled) {
+  color: var(--furia-light-gray);
+}
+
+.stepClickable:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.stepActive {
+  color: var(--furia-white);
+  border-bottom-color: var(--furia-info-blue);
+  font-weight: 600;
+  cursor: default;
+}
+
+/* Conteúdo da Etapa */
+.stepContent {
+  margin-bottom: 30px;
+  min-height: 200px;
+}
+
+.stepFieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.stepFieldset legend {
+  font-size: 1.1em;
+  font-weight: 600;
+  color: var(--furia-white);
+  margin-bottom: 15px;
+  display: block;
+}
+
+/* Grupo de Formulário */
+.formGroup {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.formGroup label {
+  font-weight: 500;
+  color: var(--furia-light-gray);
+}
+
+.inputField {
+  /* Estilos herdados ou específicos */
+}
+
+.textareaField {
+  min-height: 80px;
+  resize: vertical;
+}
+
+/* Estilo para Select */
+.selectField {
+  padding: 0.8em 1em;
+  background-color: var(--furia-dark-gray);
+  color: var(--furia-light-gray);
+  border: 1px solid var(--furia-medium-gray);
+  border-radius: var(--border-radius-small);
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 1em;
+  font-family: inherit;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23e0e0e0' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right .7em top 50%;
+  background-size: .9em auto;
+}
+
+.selectField:focus {
+  border-color: var(--furia-white);
+  outline: none;
+}
+
+
+/* Componente TagInput */
+.tagInputContainer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--furia-medium-gray);
+  border-radius: var(--border-radius-small);
+  background-color: var(--furia-dark-gray);
+  cursor: text;
+  min-height: 40px;
+}
+
+.tagInputContainer:focus-within {
+  border-color: var(--furia-white);
+}
+
+.tagItem {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--furia-medium-gray);
+  color: var(--furia-white);
+  padding: 4px 8px;
+  border-radius: var(--border-radius-small);
+  font-size: 0.9em;
+  white-space: nowrap;
+}
+
+.tagRemoveButton {
+  margin-left: 6px;
+  background: none;
+  border: none;
+  color: var(--furia-light-gray);
+  cursor: pointer;
+  padding: 0;
+  font-size: 1.1em;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.tagRemoveButton:hover {
+  color: var(--furia-error-red);
+}
+
+.tagInputField {
+  flex-grow: 1;
+  border: none;
+  background: none;
+  color: inherit;
+  padding: 4px 0;
+  margin: 0;
+  outline: none;
+  min-width: 150px;
+  font-size: 1em;
+}
+
+/* Sugestões (Autocomplete) */
+.suggestionsContainer {
+  position: relative;
+}
+
+.suggestionsList {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: var(--furia-dark-gray);
+  border: 1px solid var(--furia-medium-gray);
+  border-radius: var(--border-radius-small);
+  list-style: none;
+  margin: 2px 0 0 0;
+  padding: 0;
+  max-height: 150px;
+  overflow-y: auto;
+  z-index: 10;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.suggestionItem {
+  padding: 8px 12px;
+  cursor: pointer;
+  color: var(--furia-light-gray);
+  transition: background-color 0.2s ease;
+}
+
+.suggestionItem:hover {
+  background-color: var(--furia-medium-gray);
+  color: var(--furia-white);
+}
+
+.suggestionItem:not(:last-child) {
+  border-bottom: 1px solid #333;
+}
+
+/* Upload de Arquivo e Validação */
+.fileInfo {
+  font-size: 0.9em;
+  color: var(--furia-medium-gray);
+  margin-left: 0;
+  font-style: italic;
+}
+
+.validationStatus {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-size: 0.9em;
+}
+
+.statusValidated {
+  color: var(--furia-success-green);
+  font-weight: bold;
+}
+
+.statusPending {
+  color: var(--furia-pending-orange);
+  font-weight: bold;
+}
+
+.stepFieldset small {
+  font-size: 0.85em;
+  color: var(--furia-medium-gray);
+  margin-top: -5px;
+  display: block;
+}
+
+/* Contas Vinculadas */
+.linkedAccountsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.linkedAccountItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 15px;
+  background-color: var(--furia-black);
+  border: 1px solid var(--furia-medium-gray);
+  border-radius: var(--border-radius-small);
+  gap: 15px;
+}
+
+.linkedAccountItem span {
+  flex-grow: 1;
+  font-weight: 500;
+  color: var(--furia-light-gray);
+}
+
+.providerIcon {
+  font-size: 1.5em;
+  color: var(--furia-light-gray);
+}
+
+.linkButton,
+.unlinkButton {
+  padding: 0.5em 1em;
+  font-size: 0.9em;
+  min-width: 110px;
+  text-align: center;
+}
+
+.linkButton {
+  background-color: var(--furia-info-blue);
+  color: white;
+  border-color: transparent;
+}
+
+.linkButton:hover:not(:disabled) {
+  background-color: #1a7bcd;
+}
+
+.unlinkButton {
+  background-color: #4e0000;
+  color: white;
+  border-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.unlinkButton:hover:not(:disabled) {
+  background-color: var(--furia-error-red);
+}
+
+.linkedAccountItem.disabled {
+  opacity: 0.6;
+}
+
+.linkedAccountItem.disabled .linkButton {
+  cursor: not-allowed;
+  background-color: var(--furia-medium-gray);
+}
+
+/* Navegação do Wizard */
+.navigationButtons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid var(--furia-dark-gray);
+}
+
+.navButton {
+  padding: 0.8em 1.8em;
+  min-width: 120px;
+  text-align: center;
+}
+
+.prevButton {
+  background-color: var(--furia-medium-gray);
+}
+
+.prevButton:hover:not(:disabled) {
+  background-color: #666666;
+}
+
+.nextButton {
+  background-color: var(--furia-info-blue);
+  color: white;
+}
+
+.nextButton:hover:not(:disabled) {
+  background-color: #1a7bcd;
+}
+
+.finalSaveButton {
+  background-color: var(--furia-success-green);
+  color: white;
+  border-color: transparent;
+}
+
+.finalSaveButton:hover:not(:disabled) {
+  background-color: #3e8e41;
+}
+
+/* Mensagens */
+.message {
+  padding: 12px 20px;
+  border-radius: var(--border-radius-small);
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.message.success {
+  background-color: rgba(76, 175, 80, 0.15);
+  border: 1px solid var(--furia-success-green);
+  color: var(--furia-success-green);
+}
+
+.message.error {
+  background-color: rgba(244, 67, 54, 0.15);
+  border: 1px solid var(--furia-error-red);
+  color: var(--furia-error-red);
+}
+
+.message.info {
+  background-color: rgba(33, 150, 243, 0.15);
+  border: 1px solid var(--furia-info-blue);
+  color: var(--furia-info-blue);
+}
+
+/* Emblemas (Badges) */
+.badgesContainer {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--furia-dark-gray);
+  margin-bottom: 20px;
+}
+
+.badgesTitle {
+  text-align: center;
+  color: var(--furia-white);
+  margin-bottom: 20px;
+  font-size: 1.4em;
+}
+
+.badgesGrid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+}
+
+.badgeItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--furia-dark-gray);
+  border: 1px solid var(--furia-medium-gray);
+  border-radius: var(--border-radius-medium);
+  padding: 15px;
+  min-width: 100px;
+  max-width: 150px;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+.badgeItem:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0, 150, 255, 0.2);
+  border-color: var(--furia-info-blue);
+}
+
+.badgeIcon {
+  font-size: 2.5em;
+  margin-bottom: 8px;
+  line-height: 1;
+}
+
+.badgeName {
+  font-size: 0.9em;
+  font-weight: 500;
+  color: var(--furia-light-gray);
+  word-break: break-word;
+}
+
+/* Última Atualização */
+.lastUpdated {
+  font-size: 0.8em;
+  color: var(--furia-medium-gray);
+  text-align: center;
+  margin-top: 25px;
+}
+
+/* --- Estilos para ProfileDisplay --- */
+.profileDisplayContainer {
+  padding: 20px;
+  background-color: var(--furia-black);
+  border-radius: var(--border-radius-medium);
+  border: 1px solid var(--furia-medium-gray);
+  margin-top: 20px;
+  position: relative;
+  /* <<< Garante que o display também respeite a largura fixa do container pai >>> */
+  box-sizing: border-box;
+}
+
+.editProfileButton {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background-color: var(--furia-medium-gray);
+  color: var(--furia-light-gray);
+  padding: 6px 12px;
+  font-size: 0.9em;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.editProfileButton:hover {
+  background-color: var(--furia-light-gray);
+  color: var(--furia-black);
+}
+
+.profileHeader {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--furia-dark-gray);
+  flex-wrap: wrap; /* Permite quebrar linha em telas menores */
+}
+
+.avatarContainer {
+  flex-shrink: 0;
+}
+
+.profileAvatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--furia-medium-gray);
+}
+
+.profileAvatarPlaceholder {
+  font-size: 100px;
+  color: var(--furia-medium-gray);
+  border-radius: 50%;
+}
+
+.profileInfoMain {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-grow: 1; /* Ocupa espaço */
+  line-height: 1.2; /* <<< Tente um valor menor que o padrão (ex: 1.2 ou 1.1) */
+
+}
+
+.profileName {
+  display: inline-flex;
+  margin: 0;
+  font-size: 2em;
+  color: var(--furia-white);
+  font-weight: 600;
+  word-break: break-word; /* Quebra nomes longos */
+}
+
+.profileSteamLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--furia-light-gray);
+  text-decoration: none;
+  font-size: 1.1em;
+  transition: color 0.2s ease;
+  word-break: break-all; /* Quebra links longos */
+}
+
+.profileSteamLink:hover {
+  color: #7289da;
+}
+
+.verifiedBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--furia-success-green);
+  font-weight: 600;
+  font-size: 0.95em;
+  background-color: rgba(76, 175, 80, 0.1);
+  padding: 3px 8px;
+  border-radius: var(--border-radius-small);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  width: fit-content; /* Ajusta largura ao conteúdo */
+}
+
+.verifiedBadge svg {
+  margin-bottom: -1px;
+}
+
+.favoriteTeamDisplaySmall {
+  font-size: 1em;
+  color: var(--furia-light-gray);
+  margin: 5px 0 0 0;
+}
+
+.favoriteTeamDisplaySmall strong {
+  color: var(--furia-white);
+}
+
+/* Seção de Links Sociais na Visualização */
+.socialLinksSection {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid var(--furia-dark-gray);
+}
+
+.socialLinksTitle {
+  text-align: center;
+  color: var(--furia-light-gray);
+  font-weight: 500;
+  margin-bottom: 20px;
+  font-size: 1.1em;
+}
+
+.socialLinksGrid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.socialLinkButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 15px;
+  background-color: var(--furia-dark-gray);
+  color: var(--furia-light-gray);
+  border: 1px solid var(--furia-medium-gray);
+  border-radius: var(--border-radius-small);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-size: 1.5em;
+  position: relative;
+}
+
+.socialLinkButton:hover {
+  transform: translateY(-2px);
+  border-color: var(--furia-white);
+  color: var(--furia-white);
+  box-shadow: 0 2px 5px rgba(255, 255, 255, 0.1);
+}
+
+.socialLinkButton[title*="Twitter"]:hover { color: #1DA1F2; border-color: #1DA1F2; }
+.socialLinkButton[title*="Twitch"]:hover { color: #9146FF; border-color: #9146FF; }
+.socialLinkButton[title*="Instagram"]:hover { color: #E1306C; border-color: #E1306C; }
+.socialLinkButton[title*="Steam"]:hover { color: #aaaaaa; border-color: #aaaaaa; }
+
+.verifiedIcon {
+  position: absolute;
+  bottom: -3px;
+  right: -3px;
+  font-size: 0.6em;
+  color: var(--furia-success-green);
+  background-color: var(--furia-black);
+  border-radius: 50%;
+  padding: 1px;
+}

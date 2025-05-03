@@ -1,94 +1,90 @@
 // src/components/Profile/Steps/TagInput.jsx
-import React, { useState, useEffect, useRef } from 'react';
-import styles from '../Profile.module.css';
+import React, { useState, useEffect, useRef } from "react";
+import styles from "../Profile.module.css";
 
 function TagInput({
   label,
   fieldName,
-  items = [], // Garante que seja sempre um array
+  items = [],
   suggestionsData = [],
   handleAddItem,
   handleRemoveItem,
-  placeholder
+  placeholder,
 }) {
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const inputRef = useRef(null);
   const containerRef = useRef(null);
 
-  // Filtra sugestões
   useEffect(() => {
     const filter = () => {
       if (!inputValue || inputValue.length < 1) {
         setSuggestions([]);
-        setShowSuggestions(false);
         return;
       }
       const lowerCaseQuery = inputValue.toLowerCase();
-      // Garante que items é um array antes de chamar includes
-      const currentItems = Array.isArray(items) ? items : [];
+      const currentItems = Array.isArray(items)
+        ? items.map((i) => i.toLowerCase())
+        : [];
       const filtered = suggestionsData
-        .filter(item =>
-          item.toLowerCase().includes(lowerCaseQuery) &&
-          !currentItems.some(existing => existing.toLowerCase() === item.toLowerCase()) // Evita sugerir duplicados (case-insensitive)
+        .filter(
+          (item) =>
+            item.toLowerCase().includes(lowerCaseQuery) &&
+            !currentItems.includes(item.toLowerCase())
         )
         .slice(0, 5);
       setSuggestions(filtered);
-      // Mostra sugestões apenas se houver alguma e o input estiver focado (ou recém digitado)
-      // A lógica de foco será tratada nos handlers onFocus/onBlur/click outside
-       setShowSuggestions(filtered.length > 0);
+      setShowSuggestions(filtered.length > 0);
     };
     filter();
   }, [inputValue, suggestionsData, items]);
 
-   // Fecha sugestões se clicar fora
-   useEffect(() => {
-       const handleClickOutside = (event) => {
-           if (containerRef.current && !containerRef.current.contains(event.target)) {
-               setShowSuggestions(false);
-           }
-       };
-       document.addEventListener("mousedown", handleClickOutside);
-       return () => { document.removeEventListener("mousedown", handleClickOutside); };
-   }, [containerRef]);
-
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target)
+      ) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [containerRef]);
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
-    // Força exibição de sugestões ao digitar, se houver alguma
-     if (suggestions.length > 0) {
-         setShowSuggestions(true);
-     }
   };
-
   const handleSuggestionClick = (suggestion) => {
-    if (typeof handleAddItem === 'function') {
-        handleAddItem(fieldName, suggestion);
+    if (typeof handleAddItem === "function") {
+      handleAddItem(fieldName, suggestion);
     }
-    setInputValue('');
+    setInputValue("");
     setSuggestions([]);
     setShowSuggestions(false);
     inputRef.current?.focus();
   };
-
   const handleKeyDown = (e) => {
-    if ((e.key === 'Enter' || e.key === ',') && inputValue.trim()) {
+    if ((e.key === "Enter" || e.key === ",") && inputValue.trim()) {
       e.preventDefault();
       const newItem = inputValue.trim();
-      // Garante que items é um array
-      const currentItems = Array.isArray(items) ? items : [];
-       if (!currentItems.some(existing => existing.toLowerCase() === newItem.toLowerCase())) {
-            if (typeof handleAddItem === 'function') {
-                handleAddItem(fieldName, newItem);
-            }
-       }
-      setInputValue('');
+      if (typeof handleAddItem === "function") {
+        handleAddItem(fieldName, newItem);
+      }
+      setInputValue("");
       setShowSuggestions(false);
-    } else if (e.key === 'Backspace' && inputValue === '' && Array.isArray(items) && items.length > 0) {
-        if (typeof handleRemoveItem === 'function') {
-            handleRemoveItem(fieldName, items[items.length - 1]);
-        }
+    } else if (
+      e.key === "Backspace" &&
+      inputValue === "" &&
+      Array.isArray(items) &&
+      items.length > 0
+    ) {
+      if (typeof handleRemoveItem === "function") {
+        handleRemoveItem(fieldName, items[items.length - 1]);
+      }
     }
   };
 
@@ -96,26 +92,34 @@ function TagInput({
     <div className={styles.formGroup}>
       <label>{label}:</label>
       <div className={styles.suggestionsContainer} ref={containerRef}>
-        <div className={styles.tagInputContainer} onClick={() => inputRef.current?.focus()}>
-          {Array.isArray(items) && items.map((item, index) => ( // Garante que items é array
-            <span key={`${fieldName}-${index}-${item}`} className={styles.tagItem}>
-              {item}
-              <button
-                type="button"
-                className={styles.tagRemoveButton}
-                onClick={(e) => {
-                    e.stopPropagation();
-                    if (typeof handleRemoveItem === 'function') {
-                        handleRemoveItem(fieldName, item);
-                    }
-                 }}
-                title={`Remover ${item}`}
-                aria-label={`Remover ${item}`}
+        <div
+          className={styles.tagInputContainer}
+          onClick={() => inputRef.current?.focus()}
+        >
+          {Array.isArray(items) &&
+            items.map((item, index) => (
+              <span
+                key={`${fieldName}-${index}-${item}`}
+                className={styles.tagItem}
               >
-                ×
-              </button>
-            </span>
-          ))}
+                {item}
+                <button
+                  type="button"
+                  className={styles.tagRemoveButton}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (typeof handleRemoveItem === "function") {
+                      handleRemoveItem(fieldName, item);
+                    }
+                  }}
+                  title={`Remover ${item}`}
+                  aria-label={`Remover ${item}`}
+                >
+                  {" "}
+                  ×{" "}
+                </button>
+              </span>
+            ))}
           <input
             ref={inputRef}
             type="text"
@@ -123,9 +127,14 @@ function TagInput({
             value={inputValue}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
-            onFocus={() => setShowSuggestions(suggestions.length > 0 && inputValue.length > 0)} // Mostra ao focar só se já digitou algo? Ou sempre?
-            // onBlur={() => setTimeout(() => setShowSuggestions(false), 150)} // Atraso para permitir click na sugestão
-            placeholder={!Array.isArray(items) || items.length === 0 ? placeholder : ''}
+            onFocus={() =>
+              setShowSuggestions(
+                suggestions.length > 0 && inputValue.length > 0
+              )
+            }
+            placeholder={
+              !Array.isArray(items) || items.length === 0 ? placeholder : ""
+            }
             aria-label={label}
             autoComplete="off"
           />
@@ -136,20 +145,18 @@ function TagInput({
               <li
                 key={index}
                 className={styles.suggestionItem}
-                // Usar onMouseDown para adicionar antes do onBlur do input fechar a lista
                 onMouseDown={(e) => {
-                     e.preventDefault(); // Previne blur
-                     handleSuggestionClick(suggestion);
-                 }}
+                  e.preventDefault();
+                  handleSuggestionClick(suggestion);
+                }}
               >
                 {suggestion}
               </li>
             ))}
           </ul>
         )}
-       </div>
+      </div>
     </div>
   );
 }
-
 export default TagInput;

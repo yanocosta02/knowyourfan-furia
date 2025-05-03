@@ -1,70 +1,130 @@
-/* src/App.module.css */
-.app {
-  width: 100%;
-  max-width: 1200px; /* Limita largura máxima */
-  margin: 0 auto; /* Centraliza */
-  padding: 0 20px; /* Espaçamento lateral */
+/* src/app.css */
+
+/* Estilos Gerais da Aplicação (Exemplo - Mantenha ou ajuste os seus) */
+.App {
+  /* text-align: center;  Removido pois o header/main controlam o alinhamento */
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--furia-black); /* Fundo geral */
+  color: var(--furia-light-gray); /* Cor de texto padrão */
 }
 
-.appHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 0;
-  border-bottom: 1px solid var(--furia-dark-gray);
-  margin-bottom: 30px;
+.App-main {
+  flex-grow: 1; /* Ocupa espaço vertical */
+  padding: 20px;
+  width: 100%;
+  max-width: 1200px; /* Limita largura do conteúdo principal */
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
 }
 
-.appHeader h1 {
-    margin: 0;
-    font-size: 1.8em;
-    color: var(--furia-white);
-}
-
-.appHeader nav {
-  display: flex;
-  align-items: center;
-  gap: 15px; /* Espaço entre links/botão */
-}
-
-.appHeader nav a {
-    color: var(--furia-light-gray);
-    text-decoration: none;
-    padding: 5px 10px;
-    border-radius: var(--border-radius-small);
-    transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.appHeader nav a:hover {
-    background-color: var(--furia-dark-gray);
-    color: var(--furia-white);
-}
-
-.logoutButton {
-  background-color: #4e0000; /* Vermelho escuro para logout */
-  color: var(--furia-white);
-  border-color: transparent;
-}
-
-.logoutButton:hover {
-    background-color: var(--furia-error-red);
-    border-color: transparent;
-}
-
-
-.appMain {
-  flex-grow: 1; /* Ocupa o espaço restante */
-  padding-bottom: 40px; /* Espaço no final */
-}
-
-
-.loadingScreen {
+.loading-screen {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 300px;
   font-size: 1.2em;
   color: var(--furia-medium-gray);
+}
+
+
+/* --- Estilos do Cabeçalho e Navegação --- */
+
+.App-header {
+  display: flex;
+  justify-content: space-between; /* Título na esquerda, Nav na direita */
+  align-items: center;
+  padding: 15px 30px; /* Padding horizontal e vertical */
+  border-bottom: 1px solid var(--furia-dark-gray); /* Linha divisória sutil */
+  background-color: var(--furia-dark-gray); /* Fundo do header um pouco diferente */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra sutil */
+  width: 100%; /* Garante que o header ocupe toda a largura */
+  box-sizing: border-box;
+}
+
+.App-header h1 {
+  margin: 0;
+  font-size: 1.8em;
+  color: var(--furia-white);
+  font-weight: 600;
+}
+
+/* Container dos itens de navegação */
+.app-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Espaço entre os botões/links */
+}
+
+/* Estilo BASE para todos os links/botões da navegação */
+.nav-link { /* Classe aplicada aos NavLinks e ao botão de logout */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* Espaço entre ícone e texto */
+  padding: 8px 18px; /* Padding interno */
+  border-radius: var(--border-radius-medium);
+  background-color: var(--furia-medium-gray); /* Fundo base do botão */
+  color: var(--furia-light-gray);
+  text-decoration: none;
+  font-weight: 500;
+  border: 1px solid transparent; /* Borda inicial transparente */
+  transition: all 0.2s ease-in-out; /* Transição suave para tudo */
+  cursor: pointer;
+  font-size: 0.95em;
+  white-space: nowrap;
+}
+
+.nav-link svg { /* Estilo do ícone */
+  font-size: 1.1em;
+  /* vertical-align: middle; */ /* Tentar alinhar se necessário */
+}
+
+/* Efeito Hover para todos os itens */
+.nav-link:hover:not(:disabled) {
+  background-color: var(--furia-dark-gray);
+  border-color: var(--furia-light-gray);
+  color: var(--furia-white);
+  transform: translateY(-1px); /* Leve efeito de elevação */
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Estilo para o NavLink ATIVO */
+.nav-link.active { /* NavLink adiciona 'active' automaticamente */
+  background-color: var(--furia-black);
+  color: var(--furia-white);
+  border-color: var(--furia-info-blue);
+  font-weight: 600;
+  box-shadow: 0 0 8px rgba(33, 150, 243, 0.4);
+}
+
+/* Estilo Específico para Botão Logout */
+.logout-button {
+  /* Sobrescreve o fundo base se necessário, ou mantém */
+  /* background-color: var(--furia-medium-gray); */
+}
+
+.logout-button:hover:not(:disabled) {
+  background-color: var(--furia-error-red); /* Vermelho no hover */
+  border-color: var(--furia-error-red);
+  color: var(--furia-white);
+  box-shadow: 0 3px 6px rgba(244, 67, 54, 0.3);
+}
+
+/* Estilo para o texto do email (opcional) */
+.logout-button span {
+   margin-left: 5px;
+   opacity: 0.8;
+   font-size: 0.9em;
+   /* Pode adicionar media query para esconder em telas menores */
+   /* @media (max-width: 768px) { display: none; } */
+}
+
+/* Reset do botão para garantir herança de fontes, etc. */
+.app-nav button.nav-link {
+    font-family: inherit;
+    margin: 0;
 }
