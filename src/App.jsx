@@ -59,7 +59,7 @@ function App() {
       <div className="App">
         {/* Usa classe de app.css */}
         <header className="App-header">
-          <h1>Know Your Fan - FURIA</h1> {/* Título Atualizado */}
+          <h1>Fala Comigo, Furioso!</h1> {/* Título Atualizado */}
           {/* Usa classe de app.css */}
           <nav className="app-nav">
             {!user ? (

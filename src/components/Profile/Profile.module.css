@@ -138,15 +138,14 @@
   appearance: none;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23e0e0e0' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
   background-repeat: no-repeat;
-  background-position: right .7em top 50%;
-  background-size: .9em auto;
+  background-position: right 0.7em top 50%;
+  background-size: 0.9em auto;
 }
 
 .selectField:focus {
   border-color: var(--furia-white);
   outline: none;
 }
-
 
 /* Componente TagInput */
 .tagInputContainer {
@@ -543,7 +542,6 @@
   gap: 8px;
   flex-grow: 1; /* Ocupa espaço */
   line-height: 1.2; /* <<< Tente um valor menor que o padrão (ex: 1.2 ou 1.1) */
-
 }
 
 .profileName {
@@ -642,10 +640,22 @@
   box-shadow: 0 2px 5px rgba(255, 255, 255, 0.1);
 }
 
-.socialLinkButton[title*="Twitter"]:hover { color: #1DA1F2; border-color: #1DA1F2; }
-.socialLinkButton[title*="Twitch"]:hover { color: #9146FF; border-color: #9146FF; }
-.socialLinkButton[title*="Instagram"]:hover { color: #E1306C; border-color: #E1306C; }
-.socialLinkButton[title*="Steam"]:hover { color: #aaaaaa; border-color: #aaaaaa; }
+.socialLinkButton[title*="Twitter"]:hover {
+  color: #1da1f2;
+  border-color: #1da1f2;
+}
+.socialLinkButton[title*="Twitch"]:hover {
+  color: #9146ff;
+  border-color: #9146ff;
+}
+.socialLinkButton[title*="Instagram"]:hover {
+  color: #e1306c;
+  border-color: #e1306c;
+}
+.socialLinkButton[title*="Steam"]:hover {
+  color: #aaaaaa;
+  border-color: #aaaaaa;
+}
 
 .verifiedIcon {
   position: absolute;
@@ -656,4 +666,32 @@
   background-color: var(--furia-black);
   border-radius: 50%;
   padding: 1px;
+}
+/* Estilos adicionais para o link de esports no ProfileDisplay */
+.socialLinkButton.statusValidated {
+  border-color: var(--furia-success-green); /* Borda verde se validado */
+}
+.socialLinkButton.statusValidated:hover {
+  box-shadow: 0 2px 5px rgba(76, 175, 80, 0.3); /* Sombra verde no hover */
+}
+
+.socialLinkButton.statusPending {
+  border-color: var(--furia-pending-orange); /* Borda laranja se pendente */
+  opacity: 0.8; /* Um pouco menos destacado */
+}
+.socialLinkButton.statusPending:hover {
+  box-shadow: 0 2px 5px rgba(255, 152, 0, 0.2);
+}
+
+/* Ajuste no ícone de verificação para link esports */
+.verifiedIcon {
+  position: absolute;
+  bottom: -3px;
+  right: -3px;
+  font-size: 0.6em;
+  /* color: var(--furia-success-green); -> Cor será definida inline agora */
+  background-color: var(--furia-black);
+  border-radius: 50%;
+  padding: 1px;
+  line-height: 1; /* Garante que não afete altura */
 }

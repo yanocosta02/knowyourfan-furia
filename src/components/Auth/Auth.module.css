@@ -1,31 +1,104 @@
 /* src/components/Auth/Auth.module.css */
 
 .authContainer {
-  /* <<< LARGURA FIXA E CENTRALIZAÇÃO >>> */
-  width: 480px; /* Define a largura fixa */
-  max-width: 100%; /* Garante que não exceda a viewport em telas MUITO pequenas */
-  margin: 40px auto; /* Centraliza horizontalmente e adiciona margem vertical */
-  /* <<< FIM AJUSTES >>> */
-
-  padding: 30px 40px;
+  width: 100%;
+  max-width: 800px; /* Largura aumentada para duas colunas */
+  margin: 60px auto;
+  padding: 0; /* Padding removido do container principal */
   background-color: var(--furia-dark-gray);
   border-radius: var(--border-radius-medium);
   border: 1px solid var(--furia-medium-gray);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
 }
 
-.authContainer h2 {
+/* Coluna da Esquerda (Informações) */
+.authInfo {
+  flex: 1;
+  min-width: 300px;
+  padding: 40px 30px;
+  background-color: var(--furia-black);
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centraliza conteúdo (incluindo logo) */
+  text-align: center; /* Centraliza texto */
+  box-sizing: border-box;
+}
+
+/* <<< CONTAINER DA LOGO >>> */
+.authLogoContainer {
+  width: 100%;
+  margin-bottom: 30px; /* Espaço abaixo da logo */
+  text-align: center;
+}
+
+/* <<< ESTILO PARA A LOGO >>> */
+.authLogo {
+  max-width: 150px; /* Ajuste a largura máxima conforme necessário */
+  height: auto;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  opacity: 0.9;
+}
+
+.authInfo h2 {
+  color: var(--furia-white);
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 1.6em;
+  line-height: 1.3;
+  text-align: center;
+}
+
+.authInfo p {
+  color: var(--furia-light-gray);
+  font-size: 1em;
+  line-height: 1.6;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.authInfo p a {
+  color: var(--furia-info-blue);
+  font-weight: bold;
+}
+.authInfo p a:hover {
+  text-decoration: underline;
+}
+
+.authInfo strong {
+  color: var(--furia-white);
+  font-weight: 600;
+}
+
+/* Coluna da Direita (Formulário) */
+.authFormArea {
+  flex: 1;
+  min-width: 320px;
+  padding: 40px 50px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.authFormArea h2 {
   text-align: center;
   margin-top: 0;
   margin-bottom: 25px;
   color: var(--furia-white);
 }
 
+/* Formulário */
 .authForm {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  width: 100%;
 }
 
 .formGroup {
@@ -40,23 +113,37 @@
 }
 
 .inputField {
-  /* Estilos específicos de input aqui, se necessário */
+  /* Estilos herdados ou específicos */
 }
 
+/* Botão Principal (Email/Senha) com Destaque */
 .authButton {
-  margin-top: 10px;
-  background-color: var(--furia-black);
-  color: var(--furia-white);
-  border: 1px solid var(--furia-medium-gray);
-  font-weight: 600;
+  margin-top: 15px;
   padding: 0.9em 1.5em;
+  font-weight: 600;
+  background-color: var(--furia-white); /* Fundo branco */
+  color: var(--furia-black); /* Texto preto */
+  border: 1px solid var(--furia-white); /* Borda branca */
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  border-radius: var(--border-radius-medium); /* Garante borda arredondada */
+  cursor: pointer;
 }
 
 .authButton:hover:not(:disabled) {
-  background-color: #1a1a1a;
-  border-color: var(--furia-white);
+  background-color: var(--furia-light-gray); /* Cinza claro no hover */
+  color: var(--furia-black);
+  border-color: var(--furia-light-gray);
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.15);
+}
+.authButton:disabled {
+  background-color: var(--furia-medium-gray);
+  color: var(--furia-dark-gray);
+  border-color: transparent;
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
+/* Mensagem de Erro */
 .errorMessage {
   color: var(--furia-error-red);
   background-color: rgba(244, 67, 54, 0.1);
@@ -69,6 +156,7 @@
   font-size: 0.95em;
 }
 
+/* Link para trocar entre Login/Cadastro */
 .authSwitch {
   margin-top: 25px;
   text-align: center;
@@ -84,7 +172,7 @@
   text-decoration: underline;
 }
 
-/* Estilos para Login Social */
+/* --- Estilos para Login Social (Estilo Sutil) --- */
 .socialLoginDivider {
   display: flex;
   align-items: center;
@@ -94,16 +182,18 @@
   font-size: 0.9em;
   font-weight: 500;
 }
-
 .socialLoginDivider::before,
 .socialLoginDivider::after {
-  content: '';
+  content: "";
   flex: 1;
   border-bottom: 1px solid var(--furia-medium-gray);
 }
-
-.socialLoginDivider:not(:empty)::before { margin-right: .5em; }
-.socialLoginDivider:not(:empty)::after { margin-left: .5em; }
+.socialLoginDivider:not(:empty)::before {
+  margin-right: 0.5em;
+}
+.socialLoginDivider:not(:empty)::after {
+  margin-left: 0.5em;
+}
 
 .socialLoginButtons {
   display: flex;
@@ -111,6 +201,7 @@
   gap: 15px;
 }
 
+/* Estilo base para botões sociais */
 .socialButton {
   display: flex;
   align-items: center;
@@ -118,23 +209,34 @@
   gap: 10px;
   padding: 0.8em 1.4em;
   border: 1px solid var(--furia-medium-gray);
+  border-radius: var(--border-radius-small);
   background-color: var(--furia-dark-gray);
   color: var(--furia-light-gray);
   font-weight: 500;
   font-size: 0.95em;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    transform 0.1s ease;
+  cursor: pointer;
 }
-
-.socialButton svg { font-size: 1.2em; }
+.socialButton svg {
+  font-size: 1.2em;
+}
 
 .socialButton:hover:not(:disabled) {
-  border-color: var(--furia-white);
+  border-color: var(--furia-light-gray);
   background-color: #303030;
 }
+.socialButton:active:not(:disabled) {
+  transform: scale(0.98);
+}
 
-.googleButton {}
-.twitterButton {}
+/* Classes específicas opcionais (sem cor agora) */
+.googleButton {
+}
+.twitterButton {
+}
 
+/* Botão Indisponível */
 .disabledButton {
   opacity: 0.5;
   cursor: not-allowed;
@@ -142,6 +244,36 @@
   border-color: transparent;
 }
 .disabledButton:hover {
-   background-color: var(--furia-medium-gray);
-   border-color: transparent;
+  background-color: var(--furia-medium-gray);
+  border-color: transparent;
+}
+/* --- FIM Estilos Login Social --- */
+
+/* Media Query */
+@media (max-width: 768px) {
+  .authContainer {
+    flex-direction: column;
+    width: 95%;
+    max-width: 500px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+  .authInfo {
+    min-width: unset;
+    border-bottom: 1px solid var(--furia-medium-gray);
+    border-right: none;
+    padding: 30px;
+    align-items: center;
+    text-align: center;
+  }
+  .authFormArea {
+    min-width: unset;
+    padding: 30px;
+  }
+  .authLogoContainer {
+    margin-bottom: 20px; /* Reduz espaço em telas menores */
+  }
+  .authInfo h2 {
+    font-size: 1.4em; /* Reduz título em telas menores */
+  }
 }

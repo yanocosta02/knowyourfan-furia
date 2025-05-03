@@ -7,12 +7,12 @@
   --furia-medium-gray: #555555;
   --furia-dark-gray: #222222;
   --furia-error-red: #f44336;
-  --furia-success-green: #4CAF50;
-  --furia-info-blue: #2196F3;
+  --furia-success-green: #4caf50;
+  --furia-info-blue: #2196f3;
   --furia-pending-orange: #ff9800;
 
   /* Fontes */
-  --font-primary: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif; /* Exemplo, use uma fonte moderna */
+  --font-primary: "Inter", system-ui, Avenir, Helvetica, Arial, sans-serif; /* Exemplo, use uma fonte moderna */
 
   /* Outros */
   --border-radius-small: 4px;
@@ -22,7 +22,23 @@
 body {
   margin: 0;
   font-family: var(--font-primary);
-  background-color: var(--furia-black);
+  min-height: 100vh; /* Garante altura mínima */
+  display: flex; /* Necessário para #root esticar? Verifique seu layout */
+  place-items: center; /* Necessário para #root esticar? Verifique seu layout */
+
+  /* --- ESTILOS DO WALLPAPER --- */
+  background-color: var(
+    --furia-black
+  ); /* Cor de fallback caso a imagem falhe */
+  /* <<< SUBSTITUA PELO CAMINHO CORRETO DA SUA IMAGEM EM /public/ >>> */
+  background-image: url("/images/wallpaper.jpg");
+  background-size: cover; /* Faz a imagem cobrir toda a área, cortando se necessário */
+  background-position: center center; /* Centraliza a imagem */
+  background-repeat: no-repeat; /* Impede que a imagem se repita */
+  background-attachment: fixed; /* <<< FAZ O FUNDO FICAR FIXO AO ROLAR A PÁGINA */
+  /* --- FIM ESTILOS WALLPAPER --- */
+
+  /* Estilos de texto e suavização (mantenha os seus) */
   color: var(--furia-light-gray);
   line-height: 1.6;
   font-synthesis: none;
@@ -30,18 +46,14 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column; /* Para layout header/main */
 }
 
 #root {
-   width: 100%;
-   flex-grow: 1; /* Ocupa espaço vertical */
-   display: flex; /* Para App centralizar */
-   justify-content: center;
+  width: 100%;
+  flex-grow: 1; /* Ocupa espaço vertical */
+  display: flex; /* Para App centralizar */
+  justify-content: center;
 }
-
 
 a {
   font-weight: 500;
@@ -68,23 +80,22 @@ button {
 
 button:hover {
   border-color: var(--furia-medium-gray);
-   background-color: #333333; /* Um pouco mais claro no hover */
+  background-color: #333333; /* Um pouco mais claro no hover */
 }
 
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color; /* Ou use um outline customizado */
-   outline-color: var(--furia-info-blue);
-   outline-offset: 2px;
+  outline-color: var(--furia-info-blue);
+  outline-offset: 2px;
 }
 
 button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    background-color: var(--furia-medium-gray);
-    border-color: transparent;
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: var(--furia-medium-gray);
+  border-color: transparent;
 }
-
 
 input,
 textarea {
@@ -102,11 +113,13 @@ textarea {
 
 input:focus,
 textarea:focus {
-   border-color: var(--furia-white);
-   outline: none; /* Remove outline default, a borda já indica foco */
+  border-color: var(--furia-white);
+  outline: none; /* Remove outline default, a borda já indica foco */
 }
 
-h1, h2, h3 {
-    color: var(--furia-white); /* Títulos mais destacados */
-     font-weight: 600;
+h1,
+h2,
+h3 {
+  color: var(--furia-white); /* Títulos mais destacados */
+  font-weight: 600;
 }

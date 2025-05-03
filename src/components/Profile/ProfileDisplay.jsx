@@ -1,13 +1,13 @@
 // src/components/Profile/ProfileDisplay.jsx
 import React from "react";
 import styles from "./Profile.module.css";
-import FanBadgesDisplay from "./FanBadgesDisplay"; // Importa para usar aqui DENTRO
+import FanBadgesDisplay from "./FanBadgesDisplay";
+// <<< Garante que FaLink está importado >>>
 import {
   FaSteam,
   FaTwitter,
   FaTwitch,
   FaInstagram,
-  FaDiscord,
   FaLink,
   FaCheckCircle,
   FaUserCircle,
@@ -19,7 +19,6 @@ const socialIconMap = {
   twitter: FaTwitter,
   twitch: FaTwitch,
   instagram: FaInstagram,
-  discord: FaDiscord,
 };
 
 function ProfileDisplay({
@@ -28,50 +27,49 @@ function ProfileDisplay({
   fanBadges = [],
   onEdit,
 }) {
-  console.log("[ProfileDisplay] Renderizando com profileData:", profileData); // Log
-  console.log("[ProfileDisplay] Badges recebidos:", fanBadges); // Log
-
-  // Desestruturação segura dos dados
+  // Desestruturação segura dos dados (incluindo esportsLink e status)
   const {
-    name = "Nome não informado", // Valor padrão
+    name = "Nome não informado",
     steamNickname = "",
     avatarUrl = "",
     idValidated = false,
     socialLinks = {},
-    esportsProfileLink = "",
-    favoriteTeams = "", // String única
-    // ... outros dados se precisar ...
-  } = profileData || {}; // Garante que profileData não é null/undefined
+    esportsProfileLink = "", // <<< Pega o link esports
+    favoriteTeams = "",
+    esportsLinkValidated = false, // <<< Pega o status da validação
+  } = profileData || {};
 
-  // Função para obter links sociais (incluindo Steam)
+  // Função para obter links (AGORA INCLUI ESPORTS LINK)
   const getSocialLinks = () => {
     const links = [];
+    // Steam
     if (steamNickname) {
-      // Tenta criar link Steam - pode precisar de lógica mais robusta para ID vs Custom URL
-      const steamProfileUrl = /^[0-9]{17}$/.test(steamNickname)
-        ? `https://steamcommunity.com/profiles/${steamNickname}/` // ID numérico
-        : `https://steamcommunity.com/id/${steamNickname}/`; // Assume custom URL
+      const steamUrl = /^[0-9]{17}$/.test(steamNickname)
+        ? `https://steamcommunity.com/profiles/${steamNickname}/`
+        : `https://steamcommunity.com/id/${steamNickname}/`;
       links.push({
         platform: "steam",
-        url: steamProfileUrl,
+        url: steamUrl,
         Icon: FaSteam,
         verified: false,
       });
     }
-    for (const platform in socialLinks) {
-      if (socialLinks[platform]) {
-        const Icon = socialIconMap[platform];
-        const verified = linkedProviders.includes(`${platform}.com`);
+    // Sociais (Twitter, Twitch, Instagram)
+    for (const p in socialLinks) {
+      if (socialLinks[p]) {
+        const Icon = socialIconMap[p];
+        const verified = linkedProviders.includes(`${p}.com`);
         if (Icon)
-          links.push({ platform, url: socialLinks[platform], Icon, verified });
+          links.push({ platform: p, url: socialLinks[p], Icon, verified });
       }
     }
+    // <<< ADICIONA O LINK ESPORTS SE EXISTIR >>>
     if (esportsProfileLink) {
       links.push({
         platform: "esports",
         url: esportsProfileLink,
-        Icon: FaLink,
-        verified: profileData.esportsProfileValidated,
+        Icon: FaLink, // Usa o ícone de link genérico
+        verified: esportsLinkValidated, // Usa o status da validação simulada
       });
     }
     return links;
@@ -81,7 +79,7 @@ function ProfileDisplay({
 
   return (
     <div className={styles.profileDisplayContainer}>
-      {/* Botão Editar */}
+      {/* ... (Botão Editar, Header com Avatar/Nome/Steam/Verificado/Time) ... */}
       <button
         onClick={onEdit}
         className={styles.editProfileButton}
@@ -89,8 +87,6 @@ function ProfileDisplay({
       >
         <FaEdit /> Editar
       </button>
-
-      {/* Cabeçalho do Perfil */}
       <div className={styles.profileHeader}>
         <div className={styles.avatarContainer}>
           {avatarUrl ? (
@@ -98,9 +94,9 @@ function ProfileDisplay({
               src={avatarUrl}
               alt={`${name}'s avatar`}
               className={styles.profileAvatar}
-              onError={(e) =>
-                (e.target.src = "")
-              } /* Fallback simples se a imagem quebrar */
+              onError={(e) => {
+                e.target.style.display = "none";
+              }}
             />
           ) : (
             <FaUserCircle className={styles.profileAvatarPlaceholder} />
@@ -123,20 +119,16 @@ function ProfileDisplay({
               <FaCheckCircle /> Verificado
             </span>
           )}
-          {/* Exibe time favorito aqui se quiser */}
           {favoriteTeams && (
             <p className={styles.favoriteTeamDisplaySmall}>
-              {" "}
-              {/* Estilo menor */}
               Torce para: <strong>{favoriteTeams}</strong>
             </p>
           )}
         </div>
       </div>
 
-      {/* Seção de Emblemas (renderizada aqui dentro) */}
+      {/* ... (FanBadgesDisplay e mensagem de 'nenhum badge') ... */}
       <FanBadgesDisplay badges={fanBadges} />
-      {/* Mensagem se não houver emblemas */}
       {(!fanBadges || fanBadges.length === 0) && (
         <p
           style={{
@@ -146,14 +138,14 @@ function ProfileDisplay({
             fontStyle: "italic",
           }}
         >
-          Nenhum emblema ganho ainda. Complete seu perfil!
+          Nenhum emblema ganho ainda.
         </p>
       )}
 
-      {/* Seção de Links Sociais */}
+      {/* Seção de Links Sociais (agora inclui o link esports se adicionado) */}
       {displayLinks.length > 0 && (
         <div className={styles.socialLinksSection}>
-          <h4 className={styles.socialLinksTitle}>Conecte-se:</h4>
+          <h4 className={styles.socialLinksTitle}>Conecte-se / Perfis:</h4>
           <div className={styles.socialLinksGrid}>
             {displayLinks.map(({ platform, url, Icon, verified }) => (
               <a
@@ -163,16 +155,52 @@ function ProfileDisplay({
                 rel="noopener noreferrer"
                 className={`${styles.socialLinkButton} ${
                   verified ? styles.verifiedLink : ""
-                }`}
+                } ${
+                  platform === "esports" && verified
+                    ? styles.statusValidated
+                    : ""
+                } ${
+                  platform === "esports" && !verified
+                    ? styles.statusPending
+                    : ""
+                }`} // Adiciona classes de status para o link esports
                 title={`${
-                  platform.charAt(0).toUpperCase() + platform.slice(1)
-                }${verified ? " (Verificado)" : ""}`}
+                  platform === "esports"
+                    ? "Perfil Esports"
+                    : platform.charAt(0).toUpperCase() + platform.slice(1)
+                }${
+                  verified
+                    ? platform === "esports"
+                      ? " (Relevante)"
+                      : " (Verificado)"
+                    : platform === "esports"
+                    ? " (Pendente/Inválido)"
+                    : ""
+                }`} // Ajusta tooltip
               >
                 <Icon />
-                {verified && (
+                {/* Mostra ícone de check diferente para links verificados vs relevantes */}
+                {verified && platform !== "esports" && (
                   <FaCheckCircle
                     className={styles.verifiedIcon}
                     title="Conta Verificada"
+                  />
+                )}
+                {verified && platform === "esports" && (
+                  <FaCheckCircle
+                    className={styles.verifiedIcon}
+                    style={{ color: "var(--furia-success-green)" }}
+                    title="Link Relevante (Simulado)"
+                  />
+                )}
+                {!verified && platform === "esports" && (
+                  <FaCheckCircle
+                    className={styles.verifiedIcon}
+                    style={{
+                      color: "var(--furia-pending-orange)",
+                      opacity: 0.7,
+                    }}
+                    title="Link Pendente/Inválido (Simulado)"
                   />
                 )}
               </a>
