@@ -1,0 +1,70 @@
+/* src/App.module.css */
+.app {
+  width: 100%;
+  max-width: 1200px; /* Limita largura máxima */
+  margin: 0 auto; /* Centraliza */
+  padding: 0 20px; /* Espaçamento lateral */
+  display: flex;
+  flex-direction: column;
+}
+
+.appHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--furia-dark-gray);
+  margin-bottom: 30px;
+}
+
+.appHeader h1 {
+    margin: 0;
+    font-size: 1.8em;
+    color: var(--furia-white);
+}
+
+.appHeader nav {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* Espaço entre links/botão */
+}
+
+.appHeader nav a {
+    color: var(--furia-light-gray);
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: var(--border-radius-small);
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.appHeader nav a:hover {
+    background-color: var(--furia-dark-gray);
+    color: var(--furia-white);
+}
+
+.logoutButton {
+  background-color: #4e0000; /* Vermelho escuro para logout */
+  color: var(--furia-white);
+  border-color: transparent;
+}
+
+.logoutButton:hover {
+    background-color: var(--furia-error-red);
+    border-color: transparent;
+}
+
+
+.appMain {
+  flex-grow: 1; /* Ocupa o espaço restante */
+  padding-bottom: 40px; /* Espaço no final */
+}
+
+
+.loadingScreen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  font-size: 1.2em;
+  color: var(--furia-medium-gray);
+}

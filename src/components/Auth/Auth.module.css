@@ -1,0 +1,80 @@
+.authContainer {
+    max-width: 450px;
+    margin: 40px auto; /* Centraliza e dá espaço */
+    padding: 30px 40px;
+    background-color: var(--furia-dark-gray); /* Fundo do card */
+    border-radius: var(--border-radius-medium);
+    border: 1px solid var(--furia-medium-gray);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  .authContainer h2 {
+      text-align: center;
+      margin-top: 0;
+      margin-bottom: 25px;
+      color: var(--furia-white);
+  }
+  
+  .authForm {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Espaço entre os grupos de formulário */
+  }
+  
+  .formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Espaço entre label e input */
+  }
+  
+  .formGroup label {
+      font-weight: 500;
+      color: var(--furia-light-gray);
+  }
+  
+  /* Herdando estilos de input de index.css, sem necessidade de redefinir aqui
+     a menos que queira algo específico para auth */
+  .inputField {
+      /* Estilos específicos de input aqui, se necessário */
+  }
+  
+  .authButton {
+    margin-top: 10px; /* Espaço extra antes do botão */
+    background-color: var(--furia-black); /* Botão principal preto */
+    color: var(--furia-white);
+    border: 1px solid var(--furia-medium-gray);
+    font-weight: 600;
+    padding: 0.9em 1.5em;
+  }
+  
+  .authButton:hover:not(:disabled) {
+     background-color: #1a1a1a; /* Preto um pouco mais claro */
+     border-color: var(--furia-white);
+  }
+  
+  .errorMessage {
+    color: var(--furia-error-red);
+    background-color: rgba(244, 67, 54, 0.1);
+    border: 1px solid var(--furia-error-red);
+    padding: 10px 15px;
+    border-radius: var(--border-radius-small);
+    text-align: center;
+    margin-top: 5px;
+    margin-bottom: 0;
+    font-size: 0.95em;
+  }
+  
+  .authSwitch {
+    margin-top: 25px;
+    text-align: center;
+    font-size: 0.9em;
+    color: var(--furia-light-gray);
+  }
+  
+  .authSwitch a {
+      font-weight: 600;
+      color: var(--furia-info-blue); /* Link destacado */
+  }
+   .authSwitch a:hover {
+       text-decoration: underline;
+   }
