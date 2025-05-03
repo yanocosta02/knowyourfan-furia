@@ -1,4 +1,3 @@
-// src/components/Profile/Steps/InterestsEventsStep.jsx
 import React from "react";
 import TagInput from "./TagInput";
 import styles from "../Profile.module.css";

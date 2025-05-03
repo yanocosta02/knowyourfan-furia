@@ -1,4 +1,3 @@
-// src/components/Profile/Steps/SocialAccountsStep.jsx
 import React from "react";
 import styles from "../Profile.module.css";
 import {

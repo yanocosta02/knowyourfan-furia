@@ -1,6 +1,3 @@
-/* src/app.css */
-
-/* Estilos Gerais da Aplicação (Exemplo - Mantenha ou ajuste os seus) */
 .App {
   /* text-align: center;  Removido pois o header/main controlam o alinhamento */
   display: flex;
@@ -30,7 +27,6 @@
   color: var(--furia-medium-gray);
 }
 
-
 /* --- Estilos do Cabeçalho e Navegação --- */
 
 .App-header {
@@ -39,7 +35,9 @@
   align-items: center;
   padding: 15px 30px; /* Padding horizontal e vertical */
   border-bottom: 1px solid var(--furia-dark-gray); /* Linha divisória sutil */
-  background-color: var(--furia-dark-gray); /* Fundo do header um pouco diferente */
+  background-color: var(
+    --furia-dark-gray
+  ); /* Fundo do header um pouco diferente */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra sutil */
   width: 100%; /* Garante que o header ocupe toda a largura */
   box-sizing: border-box;
@@ -60,7 +58,8 @@
 }
 
 /* Estilo BASE para todos os links/botões da navegação */
-.nav-link { /* Classe aplicada aos NavLinks e ao botão de logout */
+.nav-link {
+  /* Classe aplicada aos NavLinks e ao botão de logout */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -78,7 +77,8 @@
   white-space: nowrap;
 }
 
-.nav-link svg { /* Estilo do ícone */
+.nav-link svg {
+  /* Estilo do ícone */
   font-size: 1.1em;
   /* vertical-align: middle; */ /* Tentar alinhar se necessário */
 }
@@ -93,7 +93,8 @@
 }
 
 /* Estilo para o NavLink ATIVO */
-.nav-link.active { /* NavLink adiciona 'active' automaticamente */
+.nav-link.active {
+  /* NavLink adiciona 'active' automaticamente */
   background-color: var(--furia-black);
   color: var(--furia-white);
   border-color: var(--furia-info-blue);
@@ -116,15 +117,15 @@
 
 /* Estilo para o texto do email (opcional) */
 .logout-button span {
-   margin-left: 5px;
-   opacity: 0.8;
-   font-size: 0.9em;
-   /* Pode adicionar media query para esconder em telas menores */
-   /* @media (max-width: 768px) { display: none; } */
+  margin-left: 5px;
+  opacity: 0.8;
+  font-size: 0.9em;
+  /* Pode adicionar media query para esconder em telas menores */
+  /* @media (max-width: 768px) { display: none; } */
 }
 
 /* Reset do botão para garantir herança de fontes, etc. */
 .app-nav button.nav-link {
-    font-family: inherit;
-    margin: 0;
+  font-family: inherit;
+  margin: 0;
 }

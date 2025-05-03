@@ -1,4 +1,3 @@
-// src/constants.js
 
 export const teamOptions = [
     "FURIA", "LOUD", "paiN Gaming", "MIBR", "Imperial Esports", "Fluxo",

@@ -1,4 +1,3 @@
-// src/components/Profile/Profile.jsx
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
 import { db, auth } from "../../firebaseConfig"; // Sem storage

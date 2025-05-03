@@ -1,4 +1,3 @@
-// src/components/Profile/Steps/PersonalInfoStep.jsx
 import React from "react";
 import styles from "../Profile.module.css";
 import { FaUserCircle } from "react-icons/fa";

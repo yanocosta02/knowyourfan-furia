@@ -1,4 +1,3 @@
-// src/components/Profile/Steps/PurchasesStep.jsx
 import React from "react";
 import TagInput from "./TagInput"; // Importa o novo componente
 import styles from "../Profile.module.css";

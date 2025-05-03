@@ -1,8 +1,7 @@
-// src/components/Profile/ProfileDisplay.jsx
 import React from "react";
 import styles from "./Profile.module.css";
 import FanBadgesDisplay from "./FanBadgesDisplay";
-// <<< Garante que FaLink está importado >>>
+
 import {
   FaSteam,
   FaTwitter,

@@ -1,15 +1,10 @@
-/* src/components/Profile/Profile.module.css */
-
-/* Estilos Gerais do Container */
 .profileContainer {
-  /* <<< LARGURA FIXA E CENTRALIZAÇÃO >>> */
   width: 850px; /* Define a largura fixa (ajuste se preferir) */
   max-width: 100%; /* Garante que não exceda a viewport em telas MUITO pequenas */
   margin-left: auto; /* Centraliza horizontalmente */
   margin-right: auto; /* Centraliza horizontalmente */
   margin-top: 20px;
   margin-bottom: 40px;
-  /* <<< FIM AJUSTES >>> */
 
   padding: 30px;
   background-color: var(--furia-dark-gray);

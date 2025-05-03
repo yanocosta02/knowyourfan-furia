@@ -1,4 +1,3 @@
-// src/components/Profile/Steps/TagInput.jsx
 import React, { useState, useEffect, useRef } from "react";
 import styles from "../Profile.module.css";
 
