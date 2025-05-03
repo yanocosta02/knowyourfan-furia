@@ -1,10 +1,15 @@
 /* src/components/Profile/Profile.module.css */
+
+/* Estilos Gerais do Container */
 .profileContainer {
-    padding: 20px;
-    background-color: var(--furia-dark-gray); /* Fundo sutilmente diferente */
+    padding: 30px;
+    background-color: var(--furia-dark-gray);
     border-radius: var(--border-radius-medium);
     border: 1px solid var(--furia-medium-gray);
     margin-top: 20px;
+    width: 100%;
+    max-width: 800px; /* Ajuste a largura máxima se necessário */
+    margin: 20px auto; /* Centraliza */
   }
   
   .profileContainer h2 {
@@ -13,34 +18,91 @@
       margin-bottom: 30px;
   }
   
-  .profileForm {
-    display: flex;
-    flex-direction: column;
-    gap: 30px; /* Espaço entre fieldsets */
+  .profileLoading {
+      text-align: center;
+      padding: 50px;
+      color: var(--furia-medium-gray);
+      font-size: 1.2em;
   }
   
-  .fieldset {
-    border: 1px solid var(--furia-medium-gray);
-    border-radius: var(--border-radius-small);
-    padding: 20px 25px;
-    margin: 0; /* Reset default margin */
+  /* Estilos do Wizard (Indicador de Etapas) */
+  .stepIndicator {
     display: flex;
-    flex-direction: column;
-    gap: 20px; /* Espaço entre form groups dentro do fieldset */
+    flex-wrap: wrap; /* Permite quebrar linha em telas menores */
+    justify-content: center;
+    gap: 10px; /* Espaço entre botões de etapa */
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--furia-dark-gray);
   }
   
-  .fieldset legend {
+  .step { /* Estilo base para botão/link da etapa */
+    color: var(--furia-medium-gray);
+    font-weight: 500;
+    padding: 5px 10px;
+    border-bottom: 2px solid transparent;
+    transition: color 0.3s ease, border-color 0.3s ease;
+    cursor: default; /* Padrão não clicável (será sobrescrito) */
+  }
+  
+  .stepClickable { /* Classe para tornar clicável */
+      cursor: pointer;
+      background: none;
+      border: none;
+      /* padding: 5px 10px; -> Herda do .step */
+      margin: 0;
+      font-family: inherit;
+      font-size: inherit;
+      text-align: inherit;
+      border-bottom: 2px solid transparent; /* Mantém para estado ativo */
+      color: var(--furia-medium-gray);
+  }
+  .stepClickable:hover:not(:disabled) {
+      color: var(--furia-light-gray);
+  }
+  .stepClickable:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+  }
+  
+  .stepActive { /* Estilo quando a etapa está ativa */
+    color: var(--furia-white);
+    border-bottom-color: var(--furia-info-blue);
+    font-weight: 600;
+    cursor: default; /* Já está ativo, não precisa de cursor pointer */
+  }
+  
+  /* Conteúdo da Etapa Atual */
+  .stepContent {
+    margin-bottom: 30px;
+    min-height: 200px; /* Evita que a página pule muito ao trocar etapas */
+  }
+  
+  /* Estilos de Fieldset dentro das etapas (para remover bordas se não quiser) */
+  .stepFieldset {
+      border: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 25px; /* Espaço entre grupos de formulário dentro da etapa */
+  }
+  .stepFieldset legend {
       font-size: 1.1em;
       font-weight: 600;
       color: var(--furia-white);
-      padding: 0 10px; /* Espaçamento interno da legenda */
-      margin-left: 5px; /* Alinha com o conteúdo */
+      margin-bottom: 15px;
+      display: block; /* Garante que o espaçamento funcione */
+      /* display: none; -> Descomente se quiser esconder legendas */
   }
   
+  
+  /* Grupo de Formulário Padrão */
   .formGroup {
+      position: relative; /* Para posicionamento absoluto de sugestões */
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 8px; /* Espaço entre label e input/container */
   }
   
   .formGroup label {
@@ -48,67 +110,192 @@
       color: var(--furia-light-gray);
   }
   
-  /* Inputs e Textareas herdam de index.css */
-  /* Classe específica se necessário */
+  /* Inputs e Textareas (estilos básicos herdados de index.css) */
   .inputField { }
   .textareaField {
-      min-height: 80px; /* Altura mínima para textareas */
-      resize: vertical; /* Permite redimensionar só verticalmente */
+      min-height: 80px;
+      resize: vertical;
   }
   
+  /* Estilos para o Componente TagInput */
+  .tagInputContainer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border: 1px solid var(--furia-medium-gray);
+    border-radius: var(--border-radius-small);
+    background-color: var(--furia-dark-gray);
+    cursor: text;
+    min-height: 40px;
+  }
+  .tagInputContainer:focus-within {
+     border-color: var(--furia-white);
+  }
+  
+  .tagItem {
+    display: inline-flex;
+    align-items: center;
+    background-color: var(--furia-medium-gray);
+    color: var(--furia-white);
+    padding: 4px 8px;
+    border-radius: var(--border-radius-small);
+    font-size: 0.9em;
+    white-space: nowrap;
+  }
+  
+  .tagRemoveButton {
+    margin-left: 6px;
+    background: none;
+    border: none;
+    color: var(--furia-light-gray);
+    cursor: pointer;
+    padding: 0;
+    font-size: 1.1em;
+    line-height: 1;
+    transition: color 0.2s ease;
+  }
+  .tagRemoveButton:hover {
+    color: var(--furia-error-red);
+  }
+  
+  .tagInputField {
+    flex-grow: 1;
+    border: none;
+    background: none;
+    color: inherit;
+    padding: 4px 0;
+    margin: 0;
+    outline: none;
+    min-width: 150px;
+    font-size: 1em;
+  }
+  
+  /* Estilos para Sugestões (Autocomplete) */
+  .suggestionsContainer {
+    position: relative; /* Necessário para posicionar a lista abaixo */
+  }
+  
+  .suggestionsList {
+    position: absolute;
+    top: 100%; /* Logo abaixo do container pai */
+    left: 0;
+    right: 0; /* Ocupa toda a largura */
+    background-color: var(--furia-dark-gray);
+    border: 1px solid var(--furia-medium-gray);
+    border-radius: var(--border-radius-small);
+    list-style: none;
+    margin: 2px 0 0 0; /* Espaço superior */
+    padding: 0;
+    max-height: 150px;
+    overflow-y: auto;
+    z-index: 10;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .suggestionItem {
+    padding: 8px 12px;
+    cursor: pointer;
+    color: var(--furia-light-gray);
+    transition: background-color 0.2s ease;
+  }
+  .suggestionItem:hover {
+    background-color: var(--furia-medium-gray);
+    color: var(--furia-white);
+  }
+  .suggestionItem:not(:last-child) {
+      border-bottom: 1px solid #333;
+  }
+  
+  /* Info de Arquivo Selecionado */
   .fileInfo {
       font-size: 0.9em;
       color: var(--furia-medium-gray);
-      margin-left: 10px; /* Espaço após o input file */
+      margin-left: 0; /* Ajustado */
       font-style: italic;
   }
   
+  /* Status de Validação */
   .validationStatus {
-      margin-top: -10px; /* Aproxima o status do input acima */
+      margin-top: 5px; /* Ajustado */
       margin-bottom: 5px;
       font-size: 0.9em;
   }
-  
   .statusValidated {
       color: var(--furia-success-green);
       font-weight: bold;
   }
-  
   .statusPending {
       color: var(--furia-pending-orange);
       font-weight: bold;
   }
   
-  .fieldset small {
+  /* Notas pequenas (small) */
+  .stepFieldset small {
       font-size: 0.85em;
       color: var(--furia-medium-gray);
-      text-align: center;
-      margin-top: 5px;
+      margin-top: -5px; /* Aproxima do campo acima */
+      display: block;
   }
   
-  .saveButton {
-      align-self: center; /* Centraliza o botão */
-      padding: 0.9em 2em;
-      background-color: var(--furia-black); /* Mesmo estilo do botão de auth */
-      color: var(--furia-white);
-      border: 1px solid var(--furia-medium-gray);
-      font-weight: 600;
-      min-width: 180px; /* Largura mínima */
+  
+  /* Estilos para Contas Vinculadas (na Etapa Social) */
+  .linkedAccountsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .linkedAccountItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 15px;
+    background-color: var(--furia-black);
+    border: 1px solid var(--furia-medium-gray);
+    border-radius: var(--border-radius-small);
+    gap: 15px;
+  }
+  .linkedAccountItem span { flex-grow: 1; font-weight: 500; color: var(--furia-light-gray); }
+  .providerIcon { font-size: 1.5em; color: var(--furia-light-gray); }
+  /* Ícones coloridos (opcional) */
+  /* .linkedAccountItem svg[data-icon="google"] { color: #DB4437; } */
+  /* .linkedAccountItem svg[data-icon="twitter"] { color: #1DA1F2; } */
+  
+  .linkButton, .unlinkButton { padding: 0.5em 1em; font-size: 0.9em; min-width: 110px; text-align: center; }
+  .linkButton { background-color: var(--furia-info-blue); color: white; border-color: transparent; }
+  .linkButton:hover:not(:disabled) { background-color: #1a7bcd; }
+  .unlinkButton { background-color: #4e0000; color: white; border-color: transparent; display: flex; align-items: center; justify-content: center; gap: 5px; }
+  .unlinkButton:hover:not(:disabled) { background-color: var(--furia-error-red); }
+  .linkedAccountItem.disabled { opacity: 0.6; }
+  .linkedAccountItem.disabled .linkButton { cursor: not-allowed; background-color: var(--furia-medium-gray); }
+  
+  
+  /* Botões de Navegação do Wizard */
+  .navigationButtons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--furia-dark-gray);
   }
   
-   .saveButton:hover:not(:disabled) {
-     background-color: #1a1a1a;
-     border-color: var(--furia-white);
+  .navButton {
+    padding: 0.8em 1.8em;
+    min-width: 120px;
+    text-align: center;
   }
   
-  .lastUpdated {
-      font-size: 0.8em;
-      color: var(--furia-medium-gray);
-      text-align: center;
-      margin-top: 25px;
-  }
+  .prevButton { background-color: var(--furia-medium-gray); }
+  .prevButton:hover:not(:disabled) { background-color: #666666; }
   
-  /* Estilos para mensagens de feedback */
+  .nextButton { background-color: var(--furia-info-blue); color: white; }
+  .nextButton:hover:not(:disabled) { background-color: #1a7bcd; }
+  
+  .finalSaveButton { background-color: var(--furia-success-green); color: white; border-color: transparent; }
+  .finalSaveButton:hover:not(:disabled) { background-color: #3e8e41; }
+  
+  /* Mensagem de Feedback */
   .message {
     padding: 12px 20px;
     border-radius: var(--border-radius-small);
@@ -116,98 +303,55 @@
     text-align: center;
     font-weight: 500;
   }
+  .message.success { background-color: rgba(76, 175, 80, 0.15); border: 1px solid var(--furia-success-green); color: var(--furia-success-green); }
+  .message.error { background-color: rgba(244, 67, 54, 0.15); border: 1px solid var(--furia-error-red); color: var(--furia-error-red); }
+  .message.info { background-color: rgba(33, 150, 243, 0.15); border: 1px solid var(--furia-info-blue); color: var(--furia-info-blue); }
   
-  .message.success {
-    background-color: rgba(76, 175, 80, 0.15);
-    border: 1px solid var(--furia-success-green);
-    color: var(--furia-success-green);
-  }
-  
-  .message.error {
-    background-color: rgba(244, 67, 54, 0.15);
-    border: 1px solid var(--furia-error-red);
-    color: var(--furia-error-red);
-  }
-  
-  .message.info {
-      background-color: rgba(33, 150, 243, 0.15);
-      border: 1px solid var(--furia-info-blue);
-      color: var(--furia-info-blue);
-  }
-  /* Estilos para a seção de Contas Vinculadas */
-.linkedAccountsContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 15px; /* Espaço entre cada item de conta */
-  }
-  
-  .linkedAccountItem {
-    display: flex;
-    align-items: center;
-    justify-content: space-between; /* Alinha itens nas extremidades */
-    padding: 10px 15px;
-    background-color: var(--furia-black); /* Fundo um pouco diferente */
-    border: 1px solid var(--furia-medium-gray);
-    border-radius: var(--border-radius-small);
-    gap: 15px;
-  }
-  
-  .linkedAccountItem span { /* Nome do provedor */
-    flex-grow: 1; /* Ocupa espaço */
-    font-weight: 500;
-    color: var(--furia-light-gray);
-  }
-  
-  .providerIcon {
-    font-size: 1.5em; /* Tamanho do ícone */
-    color: var(--furia-light-gray); /* Cor padrão */
-  }
-  /* Cores específicas de ícone (opcional) */
-  .linkedAccountItem svg:first-of-type[color="google.com"] { color: #DB4437; }
-  .linkedAccountItem svg:first-of-type[color="twitter.com"] { color: #1DA1F2; }
-  
-  
-  .linkButton,
-  .unlinkButton {
-    padding: 0.5em 1em;
-    font-size: 0.9em;
-    min-width: 110px; /* Garante largura mínima */
-    text-align: center;
-  }
-  
-  .linkButton {
-    background-color: var(--furia-info-blue);
-    color: white;
-    border-color: transparent;
-  }
-  .linkButton:hover:not(:disabled) {
-    background-color: #1a7bcd;
-  }
-  
-  .unlinkButton {
-    background-color: #4e0000; /* Vermelho escuro */
-    color: white;
-    border-color: transparent;
-    display: flex; /* Para alinhar ícone e texto */
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-  }
-  .unlinkButton:hover:not(:disabled) {
-     background-color: var(--furia-error-red);
-  }
-  
-  /* Estilo para itens desabilitados (Twitch/Insta) */
-  .linkedAccountItem.disabled {
-    opacity: 0.6;
-  }
-  .linkedAccountItem.disabled .linkButton {
-     cursor: not-allowed;
-     background-color: var(--furia-medium-gray);
-  }
-  
-  /* Ajuste no botão salvar se ele ficou fora do form */
-  .saveButtonContainer { /* Crie um container se precisar colocar fora */
+  /* Última Atualização */
+  .lastUpdated {
+      font-size: 0.8em;
+      color: var(--furia-medium-gray);
       text-align: center;
-      margin-top: 20px;
+      margin-top: 25px;
+  }
+  /* Estilos para Checkboxes de Atividades */
+.checkboxGroupContainer {
+    display: grid; /* Ou flex com flex-wrap */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Layout em colunas responsivo */
+    gap: 15px; /* Espaço entre itens */
+    margin-top: 10px;
+  }
+  
+  .checkboxItem {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espaço entre checkbox e label */
+    background-color: var(--furia-dark-gray); /* Fundo sutil */
+    padding: 10px 15px;
+    border-radius: var(--border-radius-small);
+    border: 1px solid var(--furia-medium-gray);
+    cursor: pointer; /* Faz o item todo parecer clicável */
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+  .checkboxItem:hover {
+      background-color: #333;
+      border-color: var(--furia-light-gray);
+  }
+  
+  
+  .checkboxItem input[type="checkbox"] {
+    width: auto; /* Reseta largura do input */
+    cursor: pointer;
+    accent-color: var(--furia-info-blue); /* Cor do check (navegadores modernos) */
+    transform: scale(1.2); /* Aumenta um pouco o tamanho */
+    margin: 0;
+  }
+  
+  .checkboxItem label {
+    color: var(--furia-light-gray);
+    font-weight: normal; /* Reset do formGroup label */
+    cursor: pointer;
+    flex-grow: 1; /* Ocupa espaço */
+    /* Remove margin-bottom se herdada do formGroup */
+    margin-bottom: 0;
   }
