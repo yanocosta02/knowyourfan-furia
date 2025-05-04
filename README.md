@@ -54,8 +54,8 @@ Esta aplicação é um MVP (Minimum Viable Product) construído com a agilidade 
 Abaixo estão algumas imagens da aplicação em ação:
 
 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-  <img src="public/login.png" alt="Tela Inicial" width="35%" />
-  <img src="public/perfil.png" alt="Perfil do fã" width="35%" />
+  <img src="public/login.png" alt="Tela Inicial" width="45%" />
+  <img src="public/perfil.png" alt="Perfil do fã" width="45%" />
 </div>
 
 > 📌 \_As imagens acima ilustram a tela inicial e o perfil com os respectivos emblemas do fã.
