@@ -1,20 +1,50 @@
+// src/firebaseConfig.js (MODIFICADO PARA USAR .env)
+
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+// import { getStorage } from "firebase/storage"; // Descomente se precisar do Storage no futuro
 
+// Lê as variáveis de ambiente prefixadas com VITE_ (do arquivo .env)
 const firebaseConfig = {
-  apiKey: "AIzaSyAyfe2p4CG-ykWm5sNUbIw8gaHvuayG3Do", 
-  authDomain: "knowyourfan-furia.firebaseapp.com",
-  projectId: "knowyourfan-furia",
-  storageBucket: "knowyourfan-furia.firebasestorage.app", 
-  messagingSenderId: "193811804734",
-  appId: "1:193811804734:web:c6ba77e2d7969399b4d76f"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET, // Mesmo se não usar Storage, está na config
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// Verificação opcional para ajudar a encontrar erros de digitação no .env
+console.log("Firebase Config from Env:", firebaseConfig); // Log para ver o que foi carregado
+for (const key in firebaseConfig) {
+  // Storage Bucket pode ser opcional dependendo do seu uso
+  const isOptional = key === 'storageBucket';
+  if (!firebaseConfig[key] && !isOptional) {
+    console.error(
+      `ERRO: Variável de ambiente Firebase "${key}" (VITE_${key.replace(/([A-Z])/g, '_$1').toUpperCase()}) não encontrada ou vazia no arquivo .env!`
+    );
+    // Você pode querer lançar um erro aqui ou ter um comportamento de fallback
+  }
+}
 
-// Export Firebase services
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-// Não exporte storage
+// Initialize Firebase
+let app;
+try {
+    app = initializeApp(firebaseConfig);
+    console.log("Firebase inicializado com sucesso!");
+} catch (error) {
+    console.error("Falha ao inicializar Firebase:", error);
+    // Lide com o erro - talvez mostre uma mensagem para o usuário
+    // ou impeça o restante da aplicação de carregar
+    throw new Error("Não foi possível conectar ao Firebase. Verifique a configuração.");
+}
+
+
+// Export Firebase services (só exporta se 'app' foi inicializado)
+export const auth = app ? getAuth(app) : null;
+export const db = app ? getFirestore(app) : null;
+// export const storage = app ? getStorage(app) : null; // Descomente se usar Storage
+
+// Adicional: Exporta o próprio app se precisar em outro lugar
+// export { app };
