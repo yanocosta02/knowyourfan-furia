@@ -2,7 +2,6 @@ import React from "react";
 import TagInput from "./TagInput"; // Importa o novo componente
 import styles from "../Profile.module.css";
 
-// --- Sugestões de Compras (Mova para um arquivo separado se ficarem grandes) ---
 const purchaseSuggestionsData = [
   "Cadeira Gamer",
   "Mouse Gamer",
@@ -27,7 +26,6 @@ const purchaseSuggestionsData = [
   "Merchandising FURIA",
   "Ingresso Evento Esports",
 ];
-// --- Fim Sugestões ---
 
 // Recebe props, incluindo handleAddItem, handleRemoveItem e handleFileChange
 function PurchasesStep({

@@ -459,7 +459,7 @@ function Profile({ userId }) {
         StepComponent = (
           <SocialAccountsStep
             profileData={profileData}
-            setProfileData={setProfileData} // ✅ CORRIGIDO
+            setProfileData={setProfileData}
             linkedProviders={linkedProviders}
             handleLinkAccount={handleLinkAccount}
             handleUnlinkAccount={handleUnlinkAccount}
@@ -474,7 +474,7 @@ function Profile({ userId }) {
     return (
       <>
         {" "}
-        <h2>{`Configuração (Etapa ${currentStep}/${totalSteps})`}</h2>{" "}
+        <h2>{`Cadastro (Etapa ${currentStep}/${totalSteps})`}</h2>{" "}
         {renderStepIndicator()}{" "}
         <div className={styles.stepContent}> {StepComponent} </div>{" "}
         <div className={styles.navigationButtons}>

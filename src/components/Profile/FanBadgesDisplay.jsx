@@ -38,7 +38,6 @@ function FanBadgesDisplay({ badges = [] }) {
           </div>
         ))}
       </div>
-      {/* <<< Opcional: Adicionar mensagem se houver mais emblemas ocultos >>> */}
       {badges.length > 5 && (
         <p
           style={{

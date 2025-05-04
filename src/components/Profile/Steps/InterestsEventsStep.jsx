@@ -18,7 +18,6 @@ function InterestsEventsStep({
     <fieldset className={styles.stepFieldset}>
       <legend>Interesses, Time e Eventos</legend>
 
-      {/* SELEÇÃO ÚNICA DE TIME FAVORITO (Dropdown) */}
       <div className={styles.formGroup}>
         <label htmlFor="favoriteTeamSelect">
           Time Favorito (Selecione um):
