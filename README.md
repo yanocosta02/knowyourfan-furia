@@ -85,7 +85,7 @@ Abaixo estão algumas imagens da aplicação em ação:
 
 3.  **Configure o Firebase (para rodar localmente):**
 
-    - Crie seu próprio projeto no [Console do Firebase](https://console.firebase.google.com/) ou peça acesso ao projeto existente (se aplicável).
+    - Crie seu próprio projeto no [Console do Firebase](https://console.firebase.google.com/) ou peça acesso ao projeto existente.
     - **Habilite Serviços:** Siga os mesmos passos de habilitação (Auth com provedores, Firestore) descritos na seção de Deploy da Vercel.
     - Obtenha as **suas** credenciais Web do Firebase.
     - **Crie um arquivo `.env`** na raiz do projeto clonado.
