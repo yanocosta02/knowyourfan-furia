@@ -51,8 +51,8 @@ const initialProfileData = {
   eventsLastYear: [],
   purchasesLastYear: [],
   socialLinks: { twitter: "", twitch: "", instagram: "" },
-  esportsProfileLink: "", // ✅ Reativado
-  esportsLinkValidated: false, // ✅ Reativado
+  esportsProfileLink: "",
+  esportsLinkValidated: false,
   idDocumentInfo: null,
   idValidated: false,
   lastUpdated: null,
@@ -115,7 +115,6 @@ function Profile({ userId }) {
     return earned;
   }, []);
 
-  // Carregar dados (CORRIGIDO - sem refs a esportsProfileLink)
   useEffect(() => {
     let isMounted = true; // console.log("[useEffect] Fetch...");
     const fetchProfile = async () => {
@@ -309,12 +308,11 @@ function Profile({ userId }) {
     setProfileData((prev) => ({ ...prev, cpf: formattedCPF }));
   };
 
-  // Salvar Perfil (CORRIGIDO - sem validação de link esports)
   const handleSaveProfile = async () => {
     if (!userId) return;
     setMessage({ type: "", text: "" });
 
-    // Validação Links Sociais (mantida)
+    // Validação Links Sociais
     const twitterRegex =
       /^(https?:\/\/)?(www\.)?(twitter\.com|x\.com)\/[A-Za-z0-9_]{1,15}\/?$/;
     const instagramRegex =
