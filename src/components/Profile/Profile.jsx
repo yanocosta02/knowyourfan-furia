@@ -35,7 +35,6 @@ const simulateAIValidation = (dataType, dataValue) => {
     }, delay);
   });
 };
-// --- FIM SIMULAÇÃO ---
 
 // --- Estado Inicial (CORRIGIDO) ---
 const initialProfileData = {
@@ -57,7 +56,6 @@ const initialProfileData = {
   idValidated: false,
   lastUpdated: null,
 };
-// --- FIM Estado Inicial ---
 
 // --- Função para Máscara de CPF ---
 const formatCPF = (value) => {
@@ -72,7 +70,6 @@ const formatCPF = (value) => {
     11
   )}`;
 };
-// --- FIM Função CPF ---
 
 function Profile({ userId }) {
   // States
@@ -95,7 +92,6 @@ function Profile({ userId }) {
 
   // Gerar Badges
   const generateBadges = useCallback((data, linked) => {
-    // console.log("[generateBadges] Input:", data, linked);
     const earned = [];
     if (!data) return earned;
     badgeDefinitions.forEach((b) => {
@@ -105,7 +101,6 @@ function Profile({ userId }) {
       } catch (e) {
         console.error(`Err badge ${b.id}:`, e);
       }
-      // console.log(`[generateBadges] Crit '${b.id}': ${met}`);
       if (met) earned.push(b);
     });
     console.log(
@@ -116,7 +111,7 @@ function Profile({ userId }) {
   }, []);
 
   useEffect(() => {
-    let isMounted = true; // console.log("[useEffect] Fetch...");
+    let isMounted = true;
     const fetchProfile = async () => {
       if (!userId) {
         if (isMounted) setLoading(false);

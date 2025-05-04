@@ -60,7 +60,7 @@ function SocialAccountsStep({
               name={platform}
               value={profileData.socialLinks[platform] || ""}
               onChange={handleSocialLinkChange}
-              placeholder={`https://.../${platform}.com/usuario`}
+              placeholder={`https://${platform}.com/usuario`}
               className={styles.inputField}
             />
             <small>Ex: https://{platform}.com/seu_usuario</small>
