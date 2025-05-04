@@ -249,10 +249,54 @@ function Profile({ userId }) {
     }
   };
   const handleLinkAccount = async (providerName) => {
-    /* ... (código igual anterior) ... */
+    const user = auth.currentUser;
+    if (!user) return;
+    let provider;
+    if (providerName === "google") provider = new GoogleAuthProvider();
+    else if (providerName === "twitter") provider = new TwitterAuthProvider();
+    else return;
+    setMessage({ type: "", text: "" });
+    setLinking((prev) => ({ ...prev, [providerName]: true }));
+    try {
+      const r = await linkWithPopup(user, provider);
+      setLinkedProviders(r.user.providerData.map((p) => p.providerId));
+      setMessage({ type: "success", text: `${providerName} vinculado!` });
+    } catch (e) {
+      console.error(`Erro vincular ${providerName}:`, e);
+      if (e.code === "auth/credential-already-in-use")
+        setMessage({
+          type: "error",
+          text: `${providerName} já vinculado a outro usuário.`,
+        });
+      else if (e.code === "auth/popup-closed-by-user")
+        setMessage({ type: "info", text: `Vinculação cancelada.` });
+      else
+        setMessage({ type: "error", text: `Falha vincular ${providerName}.` });
+    } finally {
+      setLinking((prev) => ({ ...prev, [providerName]: false }));
+    }
   };
   const handleUnlinkAccount = async (providerId) => {
-    /* ... (código igual anterior) ... */
+    const user = auth.currentUser;
+    if (!user) return;
+    const passP = user.providerData.find((p) => p.providerId === "password");
+    if (user.providerData.length <= 1 && !passP) {
+      setMessage({ type: "error", text: "Não pode desvincular único método." });
+      return;
+    }
+    setMessage({ type: "", text: "" });
+    const pName = providerId.split(".")[0];
+    setLinking((prev) => ({ ...prev, [pName]: true }));
+    try {
+      const uUser = await unlink(user, providerId);
+      setLinkedProviders(uUser.providerData.map((p) => p.providerId));
+      setMessage({ type: "success", text: `${pName} desvinculado.` });
+    } catch (e) {
+      console.error(`Erro desvincular ${providerId}:`, e);
+      setMessage({ type: "error", text: `Falha desvincular ${pName}.` });
+    } finally {
+      setLinking((prev) => ({ ...prev, [pName]: false }));
+    }
   };
   const isLinked = (providerId) => linkedProviders.includes(providerId);
   const handleEditToggle = () => {
